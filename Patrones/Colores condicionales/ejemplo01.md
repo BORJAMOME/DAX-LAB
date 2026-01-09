@@ -1,4 +1,4 @@
-### Colores condicionales según rendimiento de ventas
+## Colores condicionales según rendimiento de ventas
 
 Supongamos que tenemos:
 
