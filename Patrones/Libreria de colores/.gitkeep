@@ -1,0 +1,37 @@
+# Quick Colour Measures 🎨
+
+Below are some standard colour measures for Power BI with **visual swatches**.  
+You can create them in bulk in the **DAX Query View**.
+
+> Tip: Always keep a transparent colour in your model; it can be handy for overlays or conditional formatting.
+
+---
+
+## DEFINE COLOURS
+
+| Measure | Colour | Preview |
+|---------|--------|--------|
+| `ColorTransparent` | `#FFFFFF00` | <span style="background-color:#FFFFFF00; padding:5px 20px; border:1px solid #ccc;"></span> |
+| `ColorNegativos` | `#a81917` | <span style="background-color:#a81917; padding:5px 20px; border:1px solid #ccc;"></span> |
+| `ColorPositivos` | `#3c8a37` | <span style="background-color:#3c8a37; padding:5px 20px; border:1px solid #ccc;"></span> |
+| `ColorNeutros` | `#fbfbfb` | <span style="background-color:#fbfbfb; padding:5px 20px; border:1px solid #ccc;"></span> |
+| `ColorNeutrosMorado` | `#7c7dff` | <span style="background-color:#7c7dff; padding:5px 20px; border:1px solid #ccc;"></span> |
+| `ColorNeutrosAzul` | `#0078d4` | <span style="background-color:#0078d4; padding:5px 20px; border:1px solid #ccc;"></span> |
+| `ColorGris1` | `#d3d3d3` | <span style="background-color:#d3d3d3; padding:5px 20px; border:1px solid #ccc;"></span> |
+| `ColorGris2` | `#bfbfbf` | <span style="background-color:#bfbfbf; padding:5px 20px; border:1px solid #ccc;"></span> |
+| `ColorGris3` | `#e5e5e5` | <span style="background-color:#e5e5e5; padding:5px 20px; border:1px solid #ccc;"></span> |
+
+---
+
+## DAX CODE
+
+```DAX
+MEASURE 'Measures Table'[ColorTransparent] = "#FFFFFF00"
+MEASURE 'Measures Table'[ColorNegativos] = "#a81917"
+MEASURE 'Measures Table'[ColorPositivos] = "#3c8a37"
+MEASURE 'Measures Table'[ColorNeutros] = "#fbfbfb"
+MEASURE 'Measures Table'[ColorNeutrosMorado] = "#7c7dff"
+MEASURE 'Measures Table'[ColorNeutrosAzul] = "#0078d4"
+MEASURE 'Measures Table'[ColorGris1] = "#d3d3d3"
+MEASURE 'Measures Table'[ColorGris2] = "#bfbfbf"
+MEASURE 'Measures Table'[ColorGris3] = "#e5e5e5"
