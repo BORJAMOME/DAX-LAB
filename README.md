@@ -15,10 +15,10 @@ Este repositorio contiene:
 
 ## 🔹 Cómo usar este repositorio
 
-1. Explora las carpetas **basics** y **advanced** para encontrar fórmulas según tu nivel.  
-2. Revisa **patterns** para encontrar fórmulas y estructuras reutilizables.  
-3. Inspírate en **projects** para ver cómo se aplican en casos de negocio reales.  
-4. Si quieres aportar, **haz un fork y propone mejoras**: toda contribución es bienvenida.
+1. Explora las carpetas **básico** y **avanzado** para encontrar fórmulas según tu nivel.  
+2. Revisa **patrones** para encontrar fórmulas y estructuras reutilizables.  
+3. Inspírate en **proyectos** para ver cómo se aplican en casos de negocio reales.  
+4. Si quieres aportar, **haz un fork y propon mejoras**: toda contribución es bienvenida.
 
 ---
 
