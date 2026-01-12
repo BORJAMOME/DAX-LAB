@@ -44,4 +44,4 @@ IF(
 )
 ```
 
-![Ejemplo_1](docs/imagenes/isfiltered.png)
+![isfiltered](docs/imagenes/isfiltered.png)
