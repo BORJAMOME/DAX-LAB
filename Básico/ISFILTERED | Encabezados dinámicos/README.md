@@ -42,5 +42,6 @@ IF(
     RETURN
         "Categoría: " & vTexto
 )
-´´´
+```
 
+![Ejemplo_1](docs/imagenes/Encabezado dinámico.png)
