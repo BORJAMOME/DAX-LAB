@@ -1,6 +1,9 @@
 ## Indicadores de Rendimiento con color
 
-En muchos negocios, los departamentos financieros quieren ver rápidamente qué clientes están cumpliendo con sus pagos y cuáles no, sin tener que mirar números exactos. Un semáforo es perfecto para esto: verde = bien, naranja = alerta, rojo = mal.
+En muchos negocios, los departamentos financieros quieren ver rápidamente qué clientes están cumpliendo con sus pagos y cuáles no, sin tener que mirar números exactos. Un semáforo es perfecto para esto: 
+- Verde = bien 
+- Naranja = alerta 
+- Rojo = mal
 
 #### Ejemplo:
 Supongamos que tenemos un modelo de clientes y una medida [Días Pendientes de Pago] que indica cuántos días lleva un cliente sin pagar. Queremos crear un indicador tipo semáforo para que, al ver la matriz de clientes, podamos identificar rápidamente:
