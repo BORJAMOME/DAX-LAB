@@ -1,10 +1,12 @@
-### Proyecto: Control de Presupuestos
+# Proyecto: Control de Presupuestos
 
 Este proyecto es como tener una lupa sobre tus presupuestos: te dice de un vistazo qué proyectos tiran del carro y cuáles están de relleno.
 
-#### Qué hace
+![Widget](../../docs/imagenes/Widget.png)
 
-1. Gráfico de barras que habla por sí solo
+### Qué hace
+
+#### 1. Gráfico de barras que habla por sí solo
 
   - Muestra las ventas totales por departamento.
 
@@ -12,7 +14,7 @@ Este proyecto es como tener una lupa sobre tus presupuestos: te dice de un vista
 
   - Los proyectos que están en ese Top se iluminan en morado intenso; el resto queda en un morado más suave. Así, con un golpe de vista sabes quién manda.
 
-2. Tarjetas que resumen la historia
+#### 2. Tarjetas que resumen la historia
 
   - Una tarjeta te da los datos globales del Top que hayas seleccionado.
 
@@ -20,7 +22,7 @@ Este proyecto es como tener una lupa sobre tus presupuestos: te dice de un vista
 
   - Nada de tablas kilométricas ni cifras confusas: todo limpio y directo.
 
-3. Narrativa automática que no te deja pensar demasiado
+#### 3. Narrativa automática que no te deja pensar demasiado
 
   - Según cómo estén repartidos los presupuestos, la herramienta te suelta un mensaje claro:
 
@@ -31,7 +33,7 @@ Este proyecto es como tener una lupa sobre tus presupuestos: te dice de un vista
     - Y si todo está equilibrado, confirma que los proyectos principales aportan un peso razonable.
 
 
-#### Cómo está hecho (sin entrar en tecnicismos aburridos)
+### Cómo está hecho (sin entrar en tecnicismos aburridos)
 
   - Color Barra: decide qué barras se iluminan según tu Top N.
 
@@ -48,11 +50,5 @@ Y todo esto funciona con un segmentador desconectado, para que cambiar entre Top
 --- 
 
 📂 Se incluye el archivo PBIX para que puedas probarlo, tocarlo y verlo en acción.
-
-
-![isfiltered](../../docs/imagenes/docs/imagenes/01Widget.png)
-
-
-
 
 
