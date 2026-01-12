@@ -44,4 +44,4 @@ IF(
 )
 ```
 
-![Ejemplo_1](docs/imagenes/Encabezado dinámico.png)
+![Ejemplo_1](docs/imagenes/isfiltered.png)
