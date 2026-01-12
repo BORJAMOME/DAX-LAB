@@ -76,6 +76,7 @@ RETURN
 ResultadoFinal
 ```
 
+![isfiltered](../../docs/imagenes/logica_jerarquica.png)
 
 
 
