@@ -5,7 +5,7 @@ Las cuatro medidas buscan “Color = Rojo”, pero cada una trata el contexto de
 - La clave es qué filtros se respetan, cuáles se ignoran y cuáles son redundantes.
 
 
-![filtro](../../docs/imagenes/Contexto_Filtro_II.png) 
+![Ejemplo_2](/docs/imagenes/Contexto_Filtro_II.png) 
 
 #### FILTER_Color_Rojo
 De lo que ya veo, dame solo lo rojo
