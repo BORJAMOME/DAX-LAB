@@ -1,4 +1,4 @@
-### Contexto de filtro
+## Contexto de filtro
 
 Tenemos la misma métrica (Cantidad), pero en una tarjeta vemos el total y en otra solo lo rojo.
 
@@ -28,4 +28,4 @@ CALCULATE(
 - Añade una condición: “Solo productos cuyo color sea Rojo”
 
 
-![filtro](docs/imagenes/Contexto_Filtro.png)
+![filtro](../../docs/imagenes/Contexto_Filtro.png)
