@@ -28,4 +28,4 @@ CALCULATE(
 - Añade una condición: “Solo productos cuyo color sea Rojo”
 
 
-![filtro](../../docs/imagenes/Contexto_Filtro.png)
+![filtro](/docs/imagenes/Contexto_Filtro.png)
