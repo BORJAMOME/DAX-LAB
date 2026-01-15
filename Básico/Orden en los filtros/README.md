@@ -7,6 +7,8 @@ En otras palabras: DAX tiene su propia “coreografía de filtros” y entenderl
 
 Quieres sumar ventas de un país concreto, pero al mismo tiempo quieres ignorar cualquier filtro externo sobre país. Si no controlas el orden, el total puede mostrar un país distinto o incluso todas las ventas del mundo.
 
+![ejemplo](/docs/imagenes/OrdenFiltros.png)
+
 #### Explicación:
 
 - CALCULATE recalcula una medida bajo un nuevo contexto de filtro.
@@ -25,7 +27,8 @@ Clave:
 
 - DAX aplica filtros internos antes que externos, pero el externo puede anular al interno si no usas KEEPFILTERS.
 
-- ```
+##### ALL País
+```
   ALL País =
 CALCULATE(
     CALCULATE(
@@ -44,6 +47,8 @@ Resultado: todas las ventas de todos los países.
 
 El filtro interno se ejecuta, pero el externo lo borra.
 
+
+##### País ALL
 ```
 País ALL =
 CALCULATE(
