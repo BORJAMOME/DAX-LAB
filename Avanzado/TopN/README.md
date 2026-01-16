@@ -1,5 +1,7 @@
 ## TOPN
 
+TOPN devuelve una tabla con los N mejores registros según un criterio (ventas, cantidad, margen, etc.).
+
 ![ejemplo](/docs/imagenes/topn.png)
 
 
