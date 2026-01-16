@@ -24,13 +24,13 @@ Este repositorio contiene:
 
 ## 🔹 Contenido destacado
 
-| Categoría | Ejemplo |
-|-----------|---------|
-| Time Intelligence | Cálculos de YTD, MTD, rolling averages, growth |
-| Filtering & Context | Medidas dinámicas con ALL, ALLEXCEPT, FILTER |
-| Complex KPIs | Margen ponderado, churn rate, KPI composites |
-| Optimization | Mejoras de performance, uso eficiente de CALCULATE y variables |
-| Reusable Patterns | Fórmulas modulares listas para copiar |
+| Categoría | Descripción | Enlace |
+|----------|------------|--------|
+| Básico | Fundamentos de DAX: primeras medidas, columnas calculadas y lógica esencial para entender el motor de Power BI. | [Ver 📁](./basico) |
+| Avanzado | Técnicas avanzadas de DAX centradas en contexto de filtro, inteligencia temporal y KPIs complejos. | [Ver 📁](./avanzado) |
+| Patrones | Fórmulas y estructuras DAX reutilizables, optimizadas para escalar y mantener modelos eficientes. | [Ver 📁](./patrones) |
+| Proyectos | Casos reales aplicados a negocio: ventas, finanzas y dashboards completos con storytelling. | [Ver 📁](./proyectos) |
+
 
 ---
 
