@@ -213,6 +213,7 @@ in  
 ```
 
 
+![ejemplo](/docs/imagenes/Calendario.png)
 
 
 
