@@ -1,5 +1,7 @@
 ## Creación de un calendario paso a paso 
 
+
+
 ### 1. Crearlos parámetros de fecha
 
 Power Query → Inicio > Nueva fuente > Consulta en blanco y  pegar el siguiente código para FechaInicio:
