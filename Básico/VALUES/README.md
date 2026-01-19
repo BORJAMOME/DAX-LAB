@@ -33,5 +33,5 @@ SUMX(
 )
 ```
 
-
 ![ejemplo](/docs/imagenes/VALUES1.png)
+
