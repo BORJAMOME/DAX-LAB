@@ -35,3 +35,31 @@ SUMX(
 
 ![ejemplo](/docs/imagenes/VALUES1.png)
 
+
+### Caso 2
+
+```
+DimProduct[BrandName]
+```
+
+```
+TieneUnaMarca = 
+IF(
+    HASONEVALUE( DimProduct[BrandName] ),
+    "Una sola marca",
+    "Varias marcas"
+)
+```
+
+```
+Ventas por Marca Visible = 
+SUMX(
+    VALUES( DimProduct[BrandName] ),
+    [Ventas Totales]
+)
+```
+
+![ejemplo](/docs/imagenes/VALUES2.png)
+
+
+
