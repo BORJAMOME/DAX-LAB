@@ -88,6 +88,7 @@ Esto permite algo fundamental:
 
 
 
+![ejemplo](/docs/imagenes/modeloestrella.png)
 
 
 
