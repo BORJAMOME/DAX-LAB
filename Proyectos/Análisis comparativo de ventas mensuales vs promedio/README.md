@@ -8,6 +8,9 @@ Este ejemplo muestra cómo construir en Power BI con DAX un gráfico dinámico q
 
 El resultado es un gráfico fácil de leer, muy potente para análisis de rendimiento y perfecto para storytelling.
 
+![ejemplo](/docs/imagenes/analisis_1.png)
+
+
 ### Objetivo del análisis
 
 ¿Qué meses han rendido mejor o peor que la media del año?
@@ -58,9 +61,10 @@ MIN(
     [Ventas],
     [PromedioVentas]
 )
+
+
 ```
 
 
-![ejemplo](/docs/imagenes/Analisis_1.mov)
 
-
+📂 Se incluye el archivo PBIX para que puedas probarlo, tocarlo y verlo en acción.
