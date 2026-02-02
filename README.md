@@ -15,7 +15,7 @@ Este repositorio es un compendio práctico para cualquier analista o desarrollad
 
 > ⚡ Todos los ejemplos están generalizados para facilitar su reutilización.
 
----
+
 
 ## 🔹 Cómo usar DAX Lab
 
@@ -27,7 +27,7 @@ Este repositorio es un compendio práctico para cualquier analista o desarrollad
 
 4. Contribuye al proyecto: **haz un fork y propone mejoras**, toda aportación es bienvenida.
 
----
+
 
 ## 🔹 Contenido destacado
 
@@ -39,7 +39,6 @@ Este repositorio es un compendio práctico para cualquier analista o desarrollad
 | Proyectos | Casos reales aplicados a negocio: ventas, finanzas y dashboards completos con storytelling. | [Ver 📁](./proyectos) |
 
 
----
 
 ## 🔹 Contacto
 
