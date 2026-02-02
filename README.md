@@ -1,9 +1,13 @@
 # DAX Lab ⚡
 
-Bienvenido a **DAX Lab**, mi laboratorio de medidas, fórmulas y patrones DAX.  
-Aquí comparto **todo lo que voy aprendiendo** sobre Power BI y análisis de datos, desde conceptos básicos hasta técnicas avanzadas de modelado y filtrado de datos.
+¡Bienvenido a DAX Lab! 🧪
 
-Este repositorio contiene:
+Este es mi laboratorio personal donde experimento, perfecciono y comparto fórmulas, medidas y patrones DAX. Aquí encontrarás desde conceptos básicos hasta técnicas avanzadas de modelado y análisis en Power BI, listos para inspirarte y acelerar tus proyectos de datos.
+
+🔹 Qué encontrarás aquí
+
+Este repositorio es un compendio práctico para cualquier analista o desarrollador de Power BI:
+
 - Snippets de **DAX** organizados por nivel de complejidad.
 - Mejores prácticas de **Data Modelling** y **Filter Context**.
 - Funciones definidas por usuario y patrones reutilizables.
@@ -13,12 +17,15 @@ Este repositorio contiene:
 
 ---
 
-## 🔹 Cómo usar este repositorio
+## 🔹 Cómo usar DAX Lab
 
-1. Explora las carpetas **básico** y **avanzado** para encontrar fórmulas según tu nivel.  
-2. Revisa **patrones** para encontrar fórmulas y estructuras reutilizables.  
-3. Inspírate en **proyectos** para ver cómo se aplican en casos de negocio reales.  
-4. Si quieres aportar, **haz un fork y propon mejoras**: toda contribución es bienvenida.
+1. Explora las carpetas **básico** y **avanzado** según tu nivel.
+
+2. Revisa **patrones** para fórmulas y estructuras DAX reutilizables.
+
+3. Inspírate en **proyectos** para ver DAX aplicado a casos reales de negocio.
+
+4. Contribuye al proyecto: **haz un fork y propone mejoras**, toda aportación es bienvenida.
 
 ---
 
@@ -26,9 +33,9 @@ Este repositorio contiene:
 
 | Categoría | Descripción | Enlace |
 |----------|------------|--------|
-| Básico | Fundamentos de DAX: primeras medidas, columnas calculadas y lógica esencial para entender el motor de Power BI. | [Ver 📁](./basico) |
-| Avanzado | Técnicas avanzadas de DAX centradas en contexto de filtro, inteligencia temporal y KPIs complejos. | [Ver 📁](./avanzado) |
-| Patrones | Fórmulas y estructuras DAX reutilizables, optimizadas para escalar y mantener modelos eficientes. | [Ver 📁](./patrones) |
+| Básico | Fundamentos de DAX: medidas simples, columnas calculadas y lógica esencial para entender Power BI. | [Ver 📁](./basico) |
+| Avanzado | Técnicas avanzadas: inteligencia de tiempo, contexto de filtro complejo y KPIs sofisticados. | [Ver 📁](./avanzado) |
+| Patrones | Fórmulas y estructuras reutilizables, optimizadas para modelos escalables y eficientes. | [Ver 📁](./patrones) |
 | Proyectos | Casos reales aplicados a negocio: ventas, finanzas y dashboards completos con storytelling. | [Ver 📁](./proyectos) |
 
 
