@@ -58,7 +58,7 @@ Hay que tener en cuenta siempre la siguiente pregunta cuando usamos ROLLINGYEAR:
 ***Si miro solo lo que ha pasado en los últimos 12 meses, ¿cómo de bien estamos vendiendo ahora mismo?***
 
 
-![ejemplo](/docs/imagenes/ROLLINGYEAR.png)
+![ejemplo](/docs/imagenes/TIRY.png)
 
 
 
