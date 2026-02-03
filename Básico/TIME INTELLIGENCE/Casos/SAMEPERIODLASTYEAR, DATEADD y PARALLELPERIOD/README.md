@@ -79,7 +79,7 @@ CALCULATE (
 
 
 
-
+![ejemplo](/docs/imagenes/TI.png)
 
 
 
