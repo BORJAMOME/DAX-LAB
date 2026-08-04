@@ -28,10 +28,10 @@ Este repositorio es un compendio práctico para cualquier analista o desarrollad
 
 | Categoría | Descripción | Enlace |
 |----------|------------|--------|
-| Básico | Fundamentos de DAX: medidas simples, columnas calculadas y lógica esencial para entender Power BI. | [Ver carpeta](./Básico) |
-| Avanzado | Técnicas avanzadas: inteligencia de tiempo, contexto de filtro complejo y KPIs sofisticados. | [Ver carpeta](./Avanzado) |
-| Patrones | Fórmulas y estructuras reutilizables, optimizadas para modelos escalables y eficientes. | [Ver carpeta](./Patrones) |
-| Proyectos | Casos reales aplicados a negocio: ventas, finanzas y dashboards completos con storytelling. | [Ver carpeta](./Proyectos) |
+| Básico | Fundamentos de DAX: medidas simples, columnas calculadas y lógica esencial para entender Power BI. | [Ver](./Básico) |
+| Avanzado | Técnicas avanzadas: inteligencia de tiempo, contexto de filtro complejo y KPIs sofisticados. | [Ver](./Avanzado) |
+| Patrones | Fórmulas y estructuras reutilizables, optimizadas para modelos escalables y eficientes. | [Ver](./Patrones) |
+| Proyectos | Casos reales aplicados a negocio: ventas, finanzas y dashboards completos con storytelling. | [Ver](./Proyectos) |
 
 
 
