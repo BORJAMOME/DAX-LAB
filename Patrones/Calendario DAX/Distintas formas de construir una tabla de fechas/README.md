@@ -3,7 +3,7 @@
 En Power BI no existe una única forma “correcta” de crear una tabla calendario.
 Dependiendo del contexto, del tamaño del modelo y del objetivo del análisis, hay varios enfoques válidos, cada uno con sus ventajas y limitaciones.
 
-En este repositorio muestro distintas maneras de crear una tabla de fechas en DAX, partiendo de ejemplos sencillos y avanzando hacia escenarios más dinámicos.
+Aquí recojo cinco formas de crear una tabla de fechas en DAX, de la más simple a la más dinámica. Las versiones en Power Query están en [Calendario con M](<../Calendario con M/>) y [Creación Calendario](<../Creación Calendario/>).
 
 
 Todas las soluciones parten del mismo concepto:
@@ -117,3 +117,11 @@ GENERATE (
 )
 ```
 
+### Cuál uso y cuándo
+
+- **Power Query / Dataflow** cuando el calendario se comparte entre informes o el modelo es grande: se calcula una vez en el refresco y queda documentado en un solo sitio.
+- **DAX con CALENDAR** para prototipos y modelos pequeños, o cuando necesito que el rango dependa de las propias tablas del modelo.
+- **CALENDARAUTO**, casi nunca: busca todas las columnas de fecha del modelo, incluidas fechas de nacimiento o de alta, y el rango se dispara.
+- Las versiones con `NOW()` o `TODAY()` se recalculan en cada refresco. Útil para índices relativos ("hace 3 meses"), pero hay que tenerlo en cuenta si el informe se refresca con poca frecuencia.
+
+En todos los casos, después de crearla: **marcar como tabla de fechas** y relacionarla con los hechos por la columna de fecha.

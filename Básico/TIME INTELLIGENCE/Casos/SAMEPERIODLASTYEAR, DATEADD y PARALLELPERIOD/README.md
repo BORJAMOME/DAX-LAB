@@ -2,10 +2,7 @@
 
 ### Análisis de Unidades Vendidas por día laborable y comparación interanual
 
-**Contexto**
-
-Empresa reatil con tiendas físicas. La dirección quieren saber si se vende mejor o peor que el año pasado.
-Importante: No todos los días son iguales (fines de semana y festivo distorsionan el análisis)
+Una cadena de tiendas físicas quiere saber si vende mejor o peor que el año pasado. Comparar unidades totales engaña: un mes con cinco sábados o con Semana Santa no es comparable con el mismo mes del año anterior. Por eso normalizo por día laborable antes de comparar.
 
 
 #### 1.Contar días laborables
@@ -32,7 +29,7 @@ UnidadesVendidas / día =
 DIVIDE([UnidadesVendidas], [Laborable], 0)
 ```
 
-***Medidas de Time Intelligence***
+### Medidas de Time Intelligence
 
 
 #### DATEADD
@@ -45,8 +42,8 @@ CALCULATE (
 )
 ```
 
-- Desplaza el contexto de fechas exactamente 1 año atrás
-- Respeta exactamente las fechas seleccionadas
+- Desplaza las fechas del contexto un año atrás, día a día.
+- Si en el contexto hay del 1 al 15 de marzo, devuelve del 1 al 15 de marzo del año anterior.
 
 
 ####  SAMEPERIODLASTYEAR
@@ -59,8 +56,8 @@ CALCULATE (
 )
 ```
 
-- Devuelve el mismo periodo exacto del año anterior
-- Internamente se parece a DATEADD, pero con reglas más estrictas
+- Es exactamente `DATEADD ( …, -1, YEAR )` con otro nombre.
+- La uso cuando solo necesito el año anterior, porque se lee mejor.
 
 
 #### PARALLELPERIOD
@@ -73,13 +70,16 @@ CALCULATE (
 )
 ```
 
-- Va al periodo completo equivalente
-- Ignora el rango exacto de días
-- Trabaja por bloques de tiempo
+- Desplaza y **amplía** al periodo completo: si en el contexto hay del 1 al 15 de marzo, devuelve el año anterior *entero*.
+- Útil para comparar contra el total del año anterior, no contra el mismo tramo.
+
+La diferencia solo se nota cuando el contexto no es un año completo. En una fila de mes, DATEADD y SAMEPERIODLASTYEAR devuelven el mismo mes del año anterior; PARALLELPERIOD con YEAR devuelve el año anterior completo en todas las filas.
 
 
 
 ![ejemplo](/docs/imagenes/TI.png)
+
+En la captura se ve claro: en cada mes de 2023, SAMEPERIODLASTYEAR y DATEADD devuelven el mismo mes de 2022 (enero: 5.662,67), mientras PARALLELPERIOD repite 4.090,22, la media de todo 2022, en las doce filas.
 
 
 

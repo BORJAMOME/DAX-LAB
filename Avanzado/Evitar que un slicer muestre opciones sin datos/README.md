@@ -1,4 +1,4 @@
-### Evitar que un slicer muestre opciones sin datos
+## Evitar que un slicer muestre opciones sin datos
 
 Imagina que trabajas en una empresa de logística que gestiona envíos de distintos transportistas a distintos destinos.
 
@@ -19,27 +19,29 @@ Problema típico:
 
 ##### Medida para resolverlo
 
+```DAX
+Destinos Válidos = COUNTROWS ( fact_envios )
 ```
-Destinos Válidos =
-COUNTROWS(RELATEDTABLE(fact_envios))
-```
 
-#### Cómo funciona:
+#### Cómo funciona
 
-1. RELATEDTABLE(fact_envios) devuelve todas las filas de la tabla de hechos que están relacionadas con el destino en ese momento del slicer.
+El slicer de destinos evalúa la medida una vez por cada destino. En cada evaluación, el filtro del destino y el del transportista seleccionado llegan a `fact_envios`, así que COUNTROWS devuelve los envíos de esa combinación, o blanco si no hay ninguno.
 
-2. COUNTROWS cuenta cuántos envíos hay.
+En el panel de filtros del slicer: **Destinos Válidos → no está en blanco** (o `>= 1`).
 
-Se coloca esta medida como filtro en el slicer de destinos, configurando:
-Destinos Válidos >= 1
+La primera versión usaba `COUNTROWS ( RELATEDTABLE ( fact_envios ) )`. Da lo mismo: en una medida, RELATEDTABLE equivale a CALCULATETABLE sobre la tabla y el contexto ya la filtra. La versión corta se entiende mejor.
 
 ---
 
 #### Múltiples tablas de hechos
 
-Si además quieres incluir devoluciones (fact_devoluciones), la medida se amplía: 
+Si el destino también vale cuando solo tiene devoluciones:
 
-```
+```DAX
 Destinos Válidos =
-COUNTROWS(RELATEDTABLE(fact_envios)) + COUNTROWS(RELATEDTABLE(fact_devoluciones))
+COUNTROWS ( fact_envios ) + COUNTROWS ( fact_devoluciones )
 ```
+
+BLANK + número da número, así que basta con que una de las dos tablas tenga filas.
+
+Por qué hace falta: con relaciones unidireccionales, el slicer de transportista filtra `fact_envios`, pero ese filtro no sube hasta `dim_destinos`. El slicer de destinos no se entera. La medida como filtro de visual cierra ese hueco sin volver bidireccional la relación en el modelo.

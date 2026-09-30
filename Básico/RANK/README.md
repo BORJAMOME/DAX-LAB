@@ -1,77 +1,66 @@
-## RANK
+## Rankings con RANKX
 
-RANKX devuelve la posición de un valor dentro de un conjunto, según un criterio que defines (normalmente una medida, como ventas).
+RANKX devuelve la posición de un valor dentro de una tabla, ordenada por una expresión.
 
-```
-RANKX(
-    <tabla>,  // → el conjunto sobre el que haces el ranking
-    <expresión>, // → lo que estás rankeando (ventas, cantidad, puntuación…)
-    [<orden>],        // → opcional, ASC o DESC
-    [<tipo de orden>] // → opcional, skip o dense (cómo se tratan empates)
+```DAX
+RANKX (
+    <tabla>,        -- sobre qué conjunto se ordena
+    <expresión>,    -- qué se ordena (ventas, cantidad…)
+    [<valor>],      -- opcional, casi siempre vacío
+    [<orden>],      -- DESC (por defecto) o ASC
+    [<empates>]     -- SKIP (por defecto) o DENSE
 )
 ```
 
-### RANK 1
-
-```
-Rankx I = RANKX(DimStore,[Ventas Totales])
-```
-
-- Calcula ranking dentro del contexto actual del visual
-
-- Si el visual solo tiene algunas tiendas filtradas, el ranking se limita a esas tiendas
-
-- No ignora filtros, ni slicers, ni nada
-
-
-### RANK 2
-```
-Rankx II = RANKX(ALLSELECTED(DimStore),[Ventas Totales])
-```
-
-- Aquí usamos ALLSELECTED(DimStore) → ignora el desglose por fila, pero respeta lo que el usuario ha seleccionado
-
-- Ideal para visuales con slicers: ranking dinámico basado en lo seleccionado
-
-
-### Rankx III
-
-```
-Rankx III = 
-IF(
-    HASONEVALUE(DimStore[StoreName]),
-    RANKX(ALL(DimStore),[Ventas Totales]),
-    BLANK()
-)
-```
-
-- Uso de HASONEVALUE → solo calcula ranking si hay una tienda en contexto, sino devuelve BLANK()
-
-- ALL(DimStore) → ignora todos los filtros de tienda
-
-- Perfecto para matrices o tarjetas donde solo quieres rank de una tienda visible
-
-
-### Rankx IV
-
-```
-RANKX IV = 
-SWITCH(
-    TRUE(),
-    ISINSCOPE(DimStore[StoreName]), RANKX(ALL(DimStore),[Ventas Totales])
-)
-```
-
-- Usa ISINSCOPE → se activa si la columna está en el visual
-
-- Si la columna no está en el visual, no hace nada (BLANK implícito)
-
-- Muy útil para jerarquías dinámicas donde el ranking solo tiene sentido en ciertos niveles
-
-
+La parte que decide si el ranking funciona es el primer argumento. Lo muestro con cuatro versiones sobre una tabla de tiendas de Contoso.
 
 ![ejemplo](/docs/imagenes/RANK1.png)
 
+### Rankx I: el error típico
+
+```DAX
+Rankx I = RANKX ( DimStore, [Ventas Totales] )
+```
+
+Devuelve **1 en todas las filas**. En cada fila de la tabla, `DimStore` ya está filtrada a una sola tienda, así que RANKX compara la tienda consigo misma. La dejo aquí porque es el primer ranking que escribe todo el mundo.
+
+### Rankx II: respetar la selección del usuario
+
+```DAX
+Rankx II = RANKX ( ALLSELECTED ( DimStore ), [Ventas Totales] )
+```
+
+ALLSELECTED quita el filtro de la fila pero conserva el de los slicers. Si el usuario marca cinco tiendas, el ranking va del 1 al 5. Es la versión que uso por defecto en tablas con segmentadores.
+
+El inconveniente se ve en la fila de total: también devuelve 1, un número sin sentido.
+
+### Rankx III y IV: sin valor en el total
+
+```DAX
+Rankx III =
+IF (
+    HASONEVALUE ( DimStore[StoreName] ),
+    RANKX ( ALL ( DimStore ), [Ventas Totales] )
+)
+```
+
+```DAX
+Rankx IV =
+IF (
+    ISINSCOPE ( DimStore[StoreName] ),
+    RANKX ( ALL ( DimStore ), [Ventas Totales] )
+)
+```
+
+Las dos dejan el total en blanco. La diferencia:
+
+- `HASONEVALUE` también devuelve TRUE si el usuario filtra una sola tienda en un slicer, aunque la tienda no esté en las filas del visual. En una tarjeta, eso da un ranking.
+- `ISINSCOPE` solo devuelve TRUE si `StoreName` es una columna de agrupación del visual. Es lo que quiero en matrices con jerarquía.
+
+Ojo con `ALL ( DimStore )`: ignora también los slicers, así que el ranking es siempre contra todas las tiendas. Si quiero un ranking dentro de la selección y sin total, combino `ISINSCOPE` con `ALLSELECTED`.
+
 ![ejemplo](/docs/imagenes/RANK2.png)
 
+### Nota: la función RANK
 
+Desde finales de 2023 existe `RANK`, de la familia de WINDOW y OFFSET. Permite desempatar por varias columnas con `ORDERBY`, algo que RANKX no hace. Para rankings simples sigo con RANKX por compatibilidad; si hay empates que importan, uso RANK.

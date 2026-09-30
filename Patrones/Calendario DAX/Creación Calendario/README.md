@@ -1,8 +1,10 @@
-## Creación de un calendario paso a paso 
+## Creación de un calendario paso a paso
+
+La versión más completa del calendario: rango dinámico (20 años atrás y 2 adelante), año fiscal configurable con un parámetro y festivos en una consulta separada que se combina al final. Es la que uso en proyectos donde el calendario se mantiene en Power Query.
 
 
 
-### 1. Crearlos parámetros de fecha
+### 1. Crear los parámetros de fecha
 
 Power Query → Inicio > Nueva fuente > Consulta en blanco y  pegar el siguiente código para FechaInicio:
 

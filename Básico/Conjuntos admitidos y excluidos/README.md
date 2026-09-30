@@ -9,31 +9,19 @@ Con CALCULATE le decimos a una medida:
   o
   -  “Calcula esto… excepto con estos países”.
 
-Imagina que tienes una urna con bolas.
-Cada bola es una venta y cada bola tiene una etiqueta: España, Canadá, Australia…
-
-Ahora te dicen:
-
-  - “Cuéntame todas las bolas” → fácil.
-
-  - “Cuéntame todas menos las de Canadá y Australia” → exclusión.
-
-  - “Cuéntame solo las de Canadá y Australia” → inclusión.
-
-DAX funciona exactamente así.
-No cambia los datos, elige qué bolas mirar.
+Con IN defino un conjunto de valores; con NOT delante, todo lo que queda fuera de él. CALCULATE no cambia los datos, solo elige qué filas mira.
 
 #### Medida base
 
-```
-Cantidad = SUM(Ventas[Cantidades])
+```DAX
+Cantidad = SUM ( Ventas[Cantidades] )
 ```
 - Esta medida no filtra nada.
 
-#### Medida base
+#### Conjunto EXCLUIDO (todo menos Canadá y Australia)
 
-```
-Europa = 
+```DAX
+Sin Canadá ni Australia = 
 CALCULATE(
     [Cantidad],
     NOT dim_Clientes[País] IN {
@@ -48,12 +36,14 @@ CALCULATE(
 
   - IN { ... } define un conjunto
 
-  - NOT dice: “todo menos esto”
+  - NOT invierte la condición: todo menos esto
+
+El nombre de la medida importa. En la primera versión la llamé "Europa", pero sin Canadá ni Australia siguen quedando Estados Unidos y otros países. Si el negocio quiere Europa, lo correcto es filtrar por una columna de continente, no por exclusión.
 
 
 #### Conjunto ADMITIDO (solo Canadá y Australia)
-```
-o Europa = 
+```DAX
+Canadá y Australia = 
 CALCULATE(
     [Cantidad],
     dim_Clientes[País] IN {

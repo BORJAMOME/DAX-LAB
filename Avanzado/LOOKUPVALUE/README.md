@@ -2,7 +2,7 @@
 
 LOOKUPVALUE devuelve un valor de una columna cuando encuentra una fila que cumple una o varias condiciones de búsqueda.
 
--> _“Dame este dato de esta tabla cuando se cumpla esta condición.”
+En palabras: dame este dato de esta tabla donde se cumpla esta condición.
 
 ```
 LOOKUPVALUE(
@@ -47,9 +47,17 @@ DimChannel_2[IndSubChannel] = FactSales[IndSubChannel]
 
 4. Y devuelve ChannelName
 
--> _“Recorre esta tabla, encuentra la fila donde esta clave coincide, y tráeme ese valor.”
 
-Es como un BUSCARV de Excel, pero en DAX.
+Es el BUSCARV de DAX.
+
+### RELATED o LOOKUPVALUE
+
+La captura compara las dos columnas y devuelven lo mismo. La diferencia está en cuándo usar cada una:
+
+- **RELATED** necesita una relación en el modelo. Es más rápida y es la primera opción.
+- **LOOKUPVALUE** no necesita relación. La uso cuando la clave no puede ser relación (por ejemplo, una tabla auxiliar que se busca por dos columnas) o cuando crear la relación introduciría ambigüedad.
+
+Si hay varias filas que cumplen la condición con valores distintos, LOOKUPVALUE da error. El último argumento opcional (`resultado_alternativo`) solo cubre el caso de *no encontrar* nada.
 
 
 ![ejemplo](/docs/imagenes/LOOKUPVALUE.png)

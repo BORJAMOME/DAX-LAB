@@ -10,35 +10,31 @@ Supongamos que tenemos:
 
 Queremos que una tarjeta o KPI cambie de color según si la tienda tiene ventas positivas, negativas o neutras en un periodo seleccionado por el usuario.
 
-#### 1️⃣ Medidas de color
+#### 1. Medidas de color
 
-Usamos los colores que definiste:
+Los colores salen de mi [librería de colores](<../Libreria de colores/>). Tenerlos como medidas permite cambiar la paleta en un solo sitio:
 ```
 ColorNegativos = "#a81917"
 ColorPositivos = "#3c8a37"
 ColorNeutros = "#fbfbfb"
 ```
-#### 2️⃣ Medida de color condicional dinámica
+#### 2. Medida de color condicional
 
 ```
 ColorVentas =
 SWITCH(
     TRUE(),
-    [VentasTotales] < 0, [ColorNegativos],   // Ventas negativas → rojo
-    [VentasTotales] > 0, [ColorPositivos],   // Ventas positivas → verde
-    [VentasTotales] = 0, [ColorNeutros]      // Ventas neutras → gris
+    [VentasTotales] < 0, [ColorNegativos],   // negativas → rojo
+    [VentasTotales] > 0, [ColorPositivos],   // positivas → verde
+    [ColorNeutros]                           // cero o blanco → neutro
 )
 ```
 
-Explicación:
+SWITCH ( TRUE (), … ) evalúa las condiciones en orden y devuelve el primer resultado que cumple. El último valor, sin condición, recoge todo lo demás, incluido el blanco. En la primera versión tenía `[VentasTotales] = 0` como última condición y las tiendas sin ventas se quedaban sin color.
 
-SWITCH(TRUE(), ...) → Permite evaluar múltiples condiciones de forma ordenada.
+En un modelo real guardaría `[VentasTotales]` en una variable para no evaluarla dos veces.
 
-Cada condición compara [VentasTotales] y devuelve un color según corresponda.
-
-Esta medida se puede usar en formato condicional de tarjetas, matrices o gráficos.
-
-#### 3️⃣ Ejemplo con slicer
+#### 3. Resaltar la selección del slicer
 
 Si quieres que el color dependa de la selección de tienda en un slicer, puedes combinarlo con SELECTEDVALUE:
 
@@ -48,7 +44,7 @@ ColorVentasTienda =
 IF(
     SELECTEDVALUE(Dim_Tiendas[NombreTienda]) = "Tienda_A",
     [ColorPositivos],   // Si selecciona Tienda_A → verde
-    [ColorGris]         // Si selecciona otra → gris
+    [ColorGris1]        // Si selecciona otra → gris
 )
 ```
 
@@ -60,7 +56,7 @@ Uso práctico:
 
 Así puedes resaltar automáticamente elementos importantes según la interacción del usuario con los slicers.
 
-#### 4️⃣ Aplicación en Power BI
+#### 4. Aplicación en Power BI
 
 Crea la medida [ColorVentas] o [ColorVentasTienda].
 

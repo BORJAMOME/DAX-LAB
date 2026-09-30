@@ -41,14 +41,12 @@ Ventas por Tienda ignorando Categoría
 
 ### 3. Medida dinámica según jerarquía
 
+```DAX
+01_Barras_Tiendas =
+IF ( ISINSCOPE ( dim_Categoria[Categoría] ), [01_Ventas] )
 ```
-01_Barras_Tiendas = IF(
-    ISINSCOPE(dim_Categoria[Categoría]),
-    [01_Ventas],
-    IF(ISINSCOPE(dim_Tienda[Tienda]), BLANK(),
-    BLANK()
-    ))
-```
+
+Solo devuelve valor en el nivel de categoría; en tienda y total queda en blanco. Lo uso para pintar barras de datos únicamente en las filas de detalle.
 
 ### 4. Medida principal con símbolos y porcentajes
 
@@ -117,9 +115,4 @@ SWITCH(
 ```
 
 
-📂 Se incluye el archivo PBIX para que puedas probarlo, tocarlo y verlo en acción.
-
-
-
-
-
+El `.pbix` está en esta misma carpeta.

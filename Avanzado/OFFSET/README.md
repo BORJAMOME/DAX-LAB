@@ -1,66 +1,66 @@
 ## OFFSET
 
-OFFSET te mueve por una lista ordenada y te devuelve la fila vecina (anterior, siguiente, n posiciones).
+OFFSET devuelve la fila que está N posiciones antes o después de la actual en una tabla ordenada. Sirve para comparar un elemento con su vecino sin montar la lógica con fechas o rankings.
 
-Dado un conjunto ordenado:
+Con cinco categorías ordenadas `A B C D E`, desde la fila C:
 
-[A] [B] [C] [D] [E]
+- `OFFSET ( -1, … )` → B
+- `OFFSET ( 1, … )` → D
 
-- OFFSET(-1) → B
-
-- OFFSET(1) → D
-
-Pero DAX no adivina el orden. Tú se lo tienes que imponer.
-
-
-### Como funciona la medida:
-
-```
-OFFSET(
-    desplazamiento,
-    tabla,
-    ORDERBY(expresión, ASC | DESC)
+```DAX
+OFFSET (
+    <desplazamiento>,       -- negativo: hacia atrás; positivo: hacia delante
+    <tabla>,
+    ORDERBY ( <expresión>, [ASC | DESC] )
 )
 ```
 
-- 1 → anterior
+### Categoría anterior y siguiente
 
-- +1 → siguiente
-
-- ORDERBY → el eje real del movimiento
-
-### Producto anterior
-
-```
-OFFSET -1 = 
-    CALCULATE(
-        [Cantidad], 
-        OFFSET(
-            -1,
-            ALLSELECTED(dim_Producto[Categoría])
-        )
+```DAX
+OFFSET -1 =
+CALCULATE (
+    [Cantidad],
+    OFFSET (
+        -1,
+        ALLSELECTED ( dim_Producto[Categoría] ),
+        ORDERBY ( dim_Producto[Categoría], ASC )
     )
+)
 ```
 
-### Producto siguiente
-
-```
-OFFSET +1 = 
-    CALCULATE(
-        [Cantidad], 
-        OFFSET(
-            1,
-            ALLSELECTED(dim_Producto[Categoría])
-        )
+```DAX
+OFFSET +1 =
+CALCULATE (
+    [Cantidad],
+    OFFSET (
+        1,
+        ALLSELECTED ( dim_Producto[Categoría] ),
+        ORDERBY ( dim_Producto[Categoría], ASC )
     )
+)
 ```
 
+La primera categoría no tiene anterior y la última no tiene siguiente: devuelven blanco.
 
 ![ejemplo](/docs/imagenes/OFFSET.png)
 
+### El ORDERBY, siempre explícito
 
+Si omito ORDERBY, OFFSET ordena por las columnas de la tabla en orden ascendente. Aquí daría lo mismo (orden alfabético de categoría), pero en cuanto quiero "la anterior por ventas" o "el mes anterior" con un nombre de mes que se ordena mal alfabéticamente, el resultado cambia sin avisar. Lo escribo siempre.
 
+### Caso típico: mes anterior sin Time Intelligence
 
+```DAX
+Cantidad Mes Anterior =
+CALCULATE (
+    [Cantidad],
+    OFFSET (
+        -1,
+        ALLSELECTED ( dim_Calendario[AñoMes] ),
+        ORDERBY ( dim_Calendario[AñoMes], ASC )
+    )
+)
+```
 
-
-
+Funciona con calendarios que no son estándar (fiscales, 4-4-5) donde DATEADD no encaja. Para rangos de varias filas, la herramienta es [WINDOW](<../WINDOW/>).

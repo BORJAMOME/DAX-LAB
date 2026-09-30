@@ -1,31 +1,21 @@
-## Contexto de filtro
+## Contexto de filtro I
 
-Tenemos la misma métrica (Cantidad), pero en una tarjeta vemos el total y en otra solo lo rojo.
+Misma métrica, dos tarjetas: una muestra el total y otra solo lo rojo. Lo único que cambia es el contexto de filtro.
 
-Aquí solo cambia el CONTEXTO. 
-
-#### Razonamiento 
-
-- Cantidad es la pregunta: ¿Cuántas unidades se han vendido?
-- Color_Rojo es la misma pregunta, pero añadiendo: …solo de productos rojos.
-
-```
-Cantidad = SUM(Ventas[Cantidades])
-
+```DAX
+Cantidad = SUM ( Ventas[Cantidades] )
 ```
 
-
-```
+```DAX
 Color_Rojo =
-CALCULATE(
+CALCULATE (
     [Cantidad],
     dim_Producto[Color] = "Rojo"
-
+)
 ```
 
-
-- CALCULATE modifica el contexto de filtro.
-- Añade una condición: “Solo productos cuyo color sea Rojo”
-
+`Cantidad` responde a "¿cuántas unidades se han vendido?". `Color_Rojo` hace la misma pregunta añadiendo "…de productos rojos". CALCULATE no cambia el cálculo, cambia el conjunto de filas sobre el que se hace.
 
 ![filtro](/docs/imagenes/Contexto_Filtro.png)
+
+Siguiente paso: [Contexto de filtro II](<../Contexto de filtro II/>), donde la misma idea da cinco resultados distintos según cómo se escriba el filtro.

@@ -2,7 +2,7 @@
 
 En los dashboards de BI muchas veces tenemos ventas que varían muchísimo: algunas semanas vendemos 40.000 €, otras decenas de millones. Si usamos el formato automático de Power BI, los números pequeños aparecen como “0,0 M” y eso confunde al usuario.
 
-Con esta medida, controlamos completamente cómo se muestran los valores, para que siempre se vea el número de forma clara, sin importar si es miles, millones o miles de millones, y podemos aplicar formato de moneda o sin moneda según el tipo de medida.
+La medida elige la escala (K o M) según el tamaño de cada valor, con o sin símbolo de euro.
 
 #### Ejemplo
 
@@ -30,11 +30,11 @@ Con la medida de Labels Format, el resultado será:
 
 - Marzo → 42,0 K
 
-Así se ve todo con sentido para los usuarios.
+Así cada etiqueta usa la escala que le corresponde.
 
 #### Formateo dinámico:
 
-```
+```DAX
 Ventas_Format =
 VAR _Valor = [Ventas]
 VAR AbsValor = ABS(_Valor)
@@ -89,13 +89,25 @@ SWITCH(
 VAR _Delta = [Ventas] - [Ventas_Año_Anterior]
 VAR _Pct = DIVIDE(_Delta, [Ventas_Año_Anterior], BLANK())
 RETURN
-SWITCH(
-    TRUE(),
-    _Pct > 0,
-        FORMAT(_Pct, "+0.0%; +0.0%; +0.0%"),
-    _Pct < 0,
-        FORMAT(_Pct, "-0.0%; -0.0%; -0.0%"),
-    ABS(_Pct) = 0,
-        FORMAT(_Pct, "0.0%; 0.0%; 0.0%")
-)
+    FORMAT ( _Pct, "+0.0%;-0.0%;0.0%" )
 ```
+
+Un formato de tres secciones (`positivo;negativo;cero`) resuelve el signo sin SWITCH: FORMAT elige la sección según el valor.
+
+#### Ojo: FORMAT devuelve texto
+
+Las tres medidas devuelven texto, así que no sirven como valor de un gráfico; solo como etiqueta. Para que el valor siga siendo numérico uso **cadenas de formato dinámico** (propiedad de la medida → Formato → Dinámico), con la misma lógica:
+
+```DAX
+-- Cadena de formato dinámico de [Ventas]
+VAR v = ABS ( SELECTEDMEASURE () )
+RETURN
+    SWITCH (
+        TRUE (),
+        v >= 1000000, "€#,0.0,,""M""",
+        v >= 1000,    "€#,0.0,""K""",
+        "€#,0"
+    )
+```
+
+Cada coma al final del formato divide entre 1.000, así que no hay que dividir el valor a mano. Es lo que uso hoy por defecto; la versión con FORMAT la mantengo para etiquetas que combinan número y texto.

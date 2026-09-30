@@ -2,7 +2,7 @@
 
 Este proyecto muestra cómo crear un **gráfico de columnas agrupadas** en Power BI para comparar series de datos del **año actual (CY)** y **año anterior (PY)**, destacando variaciones positivas y negativas mediante etiquetas dinámicas.  
 
-La finalidad es visualizar de forma rápida y clara las diferencias en el saldo final de cuentas entre periodos, facilitando la toma de decisiones basada en la evolución temporal de los datos.
+El caso es contable: comparar el saldo final de cada cuenta entre un año y el anterior.
 
 
 ![ejemplo](/docs/imagenes/ColumnasAgrupadas.png)
@@ -21,6 +21,8 @@ La finalidad es visualizar de forma rápida y clara las diferencias en el saldo 
 ```DAX
 02_Salto_Linea = SUM(Cuentas[Saldo])
 ```
+
+El saldo es una medida semiaditiva: no se suma a lo largo del tiempo. El saldo del año es el de la última línea, no la suma de todas.
 
 ### 2. Saldo final del año actual (CY)
 ```
@@ -62,22 +64,4 @@ IF([02_Variacion_Positiva] < [02_Variacion_Negatva],
 )
 ```
 
-📂 Se incluye el archivo PBIX para que puedas probarlo, tocarlo y verlo en acción.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+El `.pbix` está en esta misma carpeta.

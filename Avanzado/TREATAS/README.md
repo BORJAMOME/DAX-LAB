@@ -1,9 +1,8 @@
-# TREATAS 
+## TREATAS
 
-TREATAS crea una relación virtual, temporal e invisible entre una tabla “imaginada” y otra real.
-No modifica el modelo, solo el contexto del cálculo.
+TREATAS toma una tabla de valores y la aplica como filtro sobre columnas del modelo, como si esos valores vinieran de ellas. No toca el modelo: el filtro solo existe dentro de la medida.
 
-“Oye Power BI, finge que esto pertenece a esa columna… solo durante esta medida.”
+Lo uso en tres situaciones: filtrar por una lista fija de valores, conectar una tabla desconectada (un selector) con el modelo, y cruzar tablas que no tienen relación física, como un presupuesto con otra granularidad (ver [Ventas vs Presupuesto](<../../Proyectos/Ventas vs Presupuesto/>)).
 
 
 #### Medida 1 — Años 2024–2025
@@ -21,7 +20,7 @@ CALCULATE(
 
 - Calendario_II[Año] → columna real
 
-- TREATAS dice: “Trata estos valores como si vinieran del calendario”
+- TREATAS aplica esos valores como filtro sobre la columna del calendario
 
 #### Medida 2 — Fin 2024 / Inicio 2025
 
@@ -45,12 +44,11 @@ CALCULATE(
 
 ## TREATAS + tablas desconectadas
 
-Una tabla desconectada captura la intención del usuario.
-TREATAS traduce esa intención en un filtro real sobre el modelo.
+Una tabla desconectada guarda lo que el usuario elige en un slicer, pero no filtra nada por sí sola. TREATAS convierte esa selección en un filtro sobre el modelo.
 
 #### Ejemplo
 
-Selector de años “especiales” --> Tabla desconectada
+Tabla desconectada con los años que se ofrecen en el slicer:
 
 ```
 Selector_Años =
@@ -64,8 +62,7 @@ DATATABLE(
 )
 ```
 
-#### El puente: TREATAS
-Ahora conectamos intención → datos reales.
+#### La medida que las conecta
 
 ```
 Cantidad (Selector Años) =
@@ -77,11 +74,11 @@ CALCULATE(
     )
 )
 ```
-- VALUES recoge lo seleccionado en el slicer
+- VALUES recoge lo seleccionado en el slicer.
+- TREATAS lo aplica como filtro sobre `Calendario_II[Año]`.
+- El calendario filtra ventas por la relación normal.
 
-- TREATAS lo aplica al calendario
-
-- El calendario filtra ventas
+Si no hay nada seleccionado, VALUES devuelve los tres años de la tabla y la medida suma 2023-2025.
 
 
 ### Ejemplo: períodos no continuos
@@ -105,15 +102,15 @@ Cantidad Periodo Fiscal =
 CALCULATE(
     [Cantidad],
     TREATAS(
-        Periodo Fiscal Especial,
+        'Periodo Fiscal Especial',
         Calendario_II[Año],
         Calendario_II[Num Mes]
     )
 )
 ```
-- Tú controlas exactamente qué meses entran
+- La tabla define exactamente qué combinaciones año-mes entran, aunque no sean consecutivas.
 
-- Cero dependencias del calendario visual
+- Para añadir o quitar un mes se edita la tabla, no la medida.
 
 
 ### Ejemplo: períodos especiales
@@ -158,3 +155,9 @@ SWITCH(
     [Cantidad]
 )
 ```
+
+`YEAR ( TODAY () ) - 1` cambia con la fecha de refresco: el informe de enero y el de diciembre muestran "Último año" distinto sin tocar nada.
+
+### Cuándo no uso TREATAS
+
+Si existe una relación física entre las tablas, la uso. TREATAS es más lento que una relación y el filtro no es visible en el modelo, así que quien herede el informe tiene que leer la medida para entender de dónde sale el número.

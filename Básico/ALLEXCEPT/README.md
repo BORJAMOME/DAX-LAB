@@ -1,38 +1,31 @@
 ## ALLEXCEPT
 
-ALLEXCEPT es como decirle a DAX:
-"Ignora todos los filtros de la tabla, excepto los que me interesan".
-
-Es útil cuando quieres calcular totales o promedios dentro de un grupo específico, sin que otros filtros te distorsionen el resultado.
+ALLEXCEPT quita todos los filtros de una tabla menos los de las columnas que le indicas. Lo uso para totales de grupo: "total del país de esta fila", sea cual sea el producto, el color o la tienda.
 
 ![ejemplo](/docs/imagenes/ALLEXCEPT.png)
 
-Imagínate que eres un gerente de ventas y tienes una tabla enorme de transacciones: colores de productos, cantidad vendida, país del cliente…
+En una matriz País × Color, la medida devuelve en cada celda el total del país, ignorando el color. Dividir `[Cantidad]` entre ella da el peso de cada color dentro de su país.
 
-  - Si quieres saber cuántas unidades se vendieron por país, no te importa qué color ni qué tienda; solo quieres que el país permanezca.
-
-  - ALLEXCEPT actúa como un guardián: borra todos los filtros que estén encima, pero deja intacto aquel que tú elijas, en este caso el País.
-
-```
-ALLEXCEPT_País = CALCULATE ( 
-                  [Cantidad], 
-                  ALLEXCEPT ( Ventas, DIM_Clientes[País] ) 
-                  )
+```DAX
+ALLEXCEPT_País =
+CALCULATE (
+    [Cantidad],
+    ALLEXCEPT ( Ventas, DIM_Clientes[País] )
+)
 ```
 
 - CALCULATE recalcula la medida [Cantidad] bajo un nuevo contexto.
 
-- ALLEXCEPT elimina todos los filtros aplicados sobre la tabla Ventas, menos el filtro de país.
+- ALLEXCEPT elimina todos los filtros que llegan a la tabla Ventas (incluidos los de sus dimensiones relacionadas), menos el de país.
 
 ### Diferencia clave:
 
 - ALL(Ventas) eliminaría todos los filtros, país incluido.
 
-- ALLEXCEPT mantiene los que tú elijas, y eso es muy útil cuando quieres totales por grupo específico, ignorando otros atributos como color o producto.
+- ALLEXCEPT mantiene los que eliges.
 
 
-### Cuándo no usarlo:
+### Cuándo no lo uso
 
-- Si solo quieres ignorar un filtro aislado, a veces ALL + FILTER puede ser más directo.
-
-- Con tablas muy grandes, usar ALLEXCEPT con muchas columnas puede afectar performance.
+- Si solo quiero ignorar una o dos columnas, `REMOVEFILTERS ( dim_Producto[Color] )` es más claro: dice qué se quita en lugar de qué se queda.
+- ALLEXCEPT también borra filtros de slicers que el usuario sí quiere respetar (año, canal…). Si el informe tiene slicers, suelo preferir `REMOVEFILTERS` de las columnas concretas, o `CALCULATE ( [Cantidad], REMOVEFILTERS ( Ventas ), VALUES ( DIM_Clientes[País] ) )` cuando el país no está en el visual y quiero mantener igualmente el país seleccionado.

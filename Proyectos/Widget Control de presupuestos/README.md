@@ -1,56 +1,52 @@
 # Proyecto: Control de Presupuestos
 
-Este proyecto es como tener una lupa sobre tus presupuestos: te dice de un vistazo qué proyectos tiran del carro y cuáles están de relleno.
+Un widget que responde una pregunta concreta: ¿el presupuesto está concentrado en pocos proyectos o repartido? El usuario elige Top 1, 3 o 5 y el widget resalta esos proyectos, calcula su peso y escribe un diagnóstico.
 
 ![Widget](../../docs/imagenes/Widget.png)
 
 ### Qué hace
 
-#### 1. Gráfico de barras que habla por sí solo
+#### 1. Gráfico de barras
 
-  - Muestra las ventas totales por departamento.
+  - Muestra el presupuesto por proyecto.
 
   - Puedes elegir si quieres ver el Top 1, Top 3 o Top 5 de proyectos en un segmentador.
 
-  - Los proyectos que están en ese Top se iluminan en morado intenso; el resto queda en un morado más suave. Así, con un golpe de vista sabes quién manda.
+  - Los proyectos del Top elegido se pintan en morado intenso y el resto en morado claro.
 
-#### 2. Tarjetas que resumen la historia
+#### 2. Tarjetas
 
   - Una tarjeta te da los datos globales del Top que hayas seleccionado.
 
   - Otra tarjeta te recuerda el total general, para que veas la proporción que representa el Top sobre el conjunto.
 
-  - Nada de tablas kilométricas ni cifras confusas: todo limpio y directo.
 
-#### 3. Narrativa automática que no te deja pensar demasiado
+#### 3. Diagnóstico automático
 
-  - Según cómo estén repartidos los presupuestos, la herramienta te suelta un mensaje claro:
+  - Según el peso del Top sobre el total, una frase clasifica la situación:
 
-    - Si un proyecto acapara demasiado, te avisa de riesgo de dependencia.
+    - Si pesa demasiado, riesgo de dependencia.
 
-    - Si todo está muy repartido, te dice que hay alta dispersión.
+    - Si pesa poco, alta dispersión.
 
-    - Y si todo está equilibrado, confirma que los proyectos principales aportan un peso razonable.
+    - Entre medias, concentración equilibrada.
 
 
 ### Cómo está hecho:
 
 #### 1. Preparar la base de datos y medidas principales
 
-Primero, necesitamos los datos de los proyectos y sus presupuestos. Aquí se creó la medida más básica:
+La medida base:
 
-Total Presupuesto
 ```
 Total Presupuesto = SUM(Proyectos[Presupuesto (€)])
 ```
 
 #### 2.  Crear el ranking de proyectos
 
-Para saber quiénes son los más importantes, necesitamos ordenarlos por presupuesto:
+Ranking de proyectos por presupuesto:
 
-```
-Ranking Presupuesto
-
+```DAX
 Ranking Presupuesto = 
 RANKX(
     ALL(Proyectos[Proyecto]),
@@ -90,9 +86,9 @@ RETURN
 IF([Ranking Presupuesto] <= SeleccionarTopN, "#5b5cff99", "#5b5cff20")
 ```
 
-```
-Texto Color funciona de forma similar, pero para el color del texto sobre las barras:
+`Texto Color` hace lo mismo para el color de la etiqueta:
 
+```DAX
 Texto Color = 
 VAR SeleccionarTopN = SELECTEDVALUE('Ranking Presupuestos'[Ranking Presupuestos])
 RETURN
@@ -101,7 +97,7 @@ IF([Ranking Presupuesto] <= SeleccionarTopN, "#5b5cff", "#b5b5b5")
 
 #### 5. Crear la narrativa automática del Top N
 
-Esta es la parte que hace que el widget hable por sí mismo: explica la concentración de los proyectos de forma clara.
+La medida que escribe el diagnóstico. Los umbrales (25-40 % para el Top 1, 55-70 % para el Top 3, 70-85 % para el Top 5) son una decisión de negocio, no estadística: los fijé para este caso y en un proyecto real los acordaría con quien use el informe.
 
 ```
 Narrativa TopN = 
@@ -176,7 +172,7 @@ IF(
 - RangoInferior/RangoSuperior define si la concentración es baja, equilibrada o alta.
 
 
-Esto evita tener que interpretar números complejos: el widget ya te dice qué pasa.
+Un detalle: el slicer ofrece del 1 al 5 (`GENERATESERIES ( 1, 5, 1 )`), pero la narrativa solo tiene umbrales para 1, 3 y 5. Con 2 o 4 devuelve "Rango no definido". Lo correcto es limitar la tabla del slicer a `{ 1, 3, 5 }` o definir umbrales para todos.
 
 
 
@@ -188,7 +184,7 @@ Esto evita tener que interpretar números complejos: el widget ya te dice qué p
 
 - Otra tarjeta muestra el total general para comparar rápidamente.
 
-Así, en un vistazo, el usuario sabe:
+De un vistazo, el usuario ve:
 
 - Qué proyectos destacan
 
@@ -200,6 +196,4 @@ Así, en un vistazo, el usuario sabe:
 
 --- 
 
-📂 Se incluye el archivo PBIX para que puedas probarlo, tocarlo y verlo en acción.
-
-
+El `.pbix` está en esta misma carpeta.

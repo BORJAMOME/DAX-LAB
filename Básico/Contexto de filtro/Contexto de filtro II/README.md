@@ -1,91 +1,71 @@
-## Contexto de filtro II
+## Contexto de filtro II: cinco formas de pedir "rojo"
 
-Las cuatro medidas buscan “Color = Rojo”, pero cada una trata el contexto de filtro de forma distinta.
-- La clave NO es el rojo.
-- La clave es qué filtros se respetan, cuáles se ignoran y cuáles son redundantes.
+Las cinco medidas de la captura buscan lo mismo, cantidad de productos rojos, pero en una matriz por color dan resultados muy distintos. La diferencia no está en el rojo, sino en qué hace cada una con el color que ya viene de la fila.
 
+![Ejemplo_2](/docs/imagenes/Contexto_Filtro_II.png)
 
-![Ejemplo_2](/docs/imagenes/Contexto_Filtro_II.png) 
+| Medida | Fila "Azul" | Fila "Rojo" | Qué hace con el filtro de la fila |
+|---|---|---|---|
+| `Color_Rojo` | 71.090 | 71.090 | Lo sobrescribe |
+| `FILTER_Color_Rojo` | (blanco) | 71.090 | Lo respeta |
+| `FILTER_ALL_Color_Rojo` | 71.090 | 71.090 | Lo sobrescribe |
+| `VALUES_Color_Rojo` | (blanco) | 71.090 | Lo respeta |
+| `DISTINCT_Color_Rojo` | (blanco) | 71.090 | Lo respeta |
 
-#### FILTER_Color_Rojo
-De lo que ya veo, dame solo lo rojo
+### Las que sobrescriben
 
-Técnica
-  - dim_Producto ya viene filtrado por el contexto actual
-  - FILTER solo reduce más
-  - NO rompe filtros existentes
-
-```
-FILTER_Color_Rojo = CALCULATE(
-			[Cantidad],
-			FILTER(
-				dim_Producto,
-				dim_Producto[Color] = "Rojo"
-			)
-		)
+```DAX
+Color_Rojo =
+CALCULATE ( [Cantidad], dim_Producto[Color] = "Rojo" )
 ```
 
-
-#### FILTER_ALL_Color_Rojo
-Ignora cualquier color que me estén diciendo y fuerza rojo
-
-Técnica
-  - ALL(dim_Producto[Color]) borra el contexto de color
-  - Ignora:
-      - Fila del visual
-      - Segmentadores por color
-  - Después aplica Rojo
-    
-Resultado:
-  - Siempre devuelve el mismo valor por fila de color.
-
-
-```
-FILTER_ALL_Color_Rojo = CALCULATE(
-			[Cantidad],
-			FILTER(
-				ALL(dim_Producto[Color]),
-				dim_Producto[Color] = "Rojo"
-			)
-		)
+```DAX
+FILTER_ALL_Color_Rojo =
+CALCULATE (
+    [Cantidad],
+    FILTER ( ALL ( dim_Producto[Color] ), dim_Producto[Color] = "Rojo" )
+)
 ```
 
-#### VALUES_Color_Rojo
-Cuenta rojo, pero solo si existe en este contexto
+Son la misma medida. El filtro booleano de la primera se traduce internamente a la segunda: `ALL` sobre la columna y luego quedarse con rojo. Por eso las dos devuelven 71.090 en todas las filas.
 
-Técnica
-  - VALUES(Color) devuelve:
-      - "Rojo" si existe
-      - BLANK si no existe
+### Las que respetan el contexto
 
-Resultado:
-  - Igual que la medida simple
-  - No aporta nada adicional
-
-```
-VALUES_Color_Rojo = CALCULATE(
-			[Cantidad],
-			dim_Producto[Color] = "Rojo",
-			VALUES(dim_Producto[Color])
-		)
+```DAX
+FILTER_Color_Rojo =
+CALCULATE (
+    [Cantidad],
+    FILTER ( dim_Producto, dim_Producto[Color] = "Rojo" )
+)
 ```
 
-#### DISTINCT_Color_Rojo
-Cuenta rojo, pero primero quita colores repetidos
+`FILTER` recorre `dim_Producto` *ya filtrada* por la fila. En la fila Azul solo hay productos azules, ninguno pasa el filtro y el resultado es blanco.
 
-Técnica
-  - DISTINCT(dim_Producto[Color]) NO hace nada útil aquí.
-    
-¿Por qué?
-  - Ya estás filtrando a "Rojo"
-  - Solo existe un valor posible
-  - DISTINCT sobre una columna filtrada a un único valor es redundante
+Funciona, pero filtrar la tabla entera es la opción cara: mete en el filtro todas las columnas de la dimensión. Si solo necesito respetar el contexto, uso KEEPFILTERS:
 
-```
-DISTINCT_Color_Rojo = CALCULATE(
-			[Cantidad],
-			dim_Producto[Color] = "Rojo",
-			DISTINCT(dim_Producto[Color])
-		)
+```DAX
+KEEPFILTERS_Color_Rojo =
+CALCULATE ( [Cantidad], KEEPFILTERS ( dim_Producto[Color] = "Rojo" ) )
 ```
 
+```DAX
+VALUES_Color_Rojo =
+CALCULATE (
+    [Cantidad],
+    dim_Producto[Color] = "Rojo",
+    VALUES ( dim_Producto[Color] )
+)
+```
+
+```DAX
+DISTINCT_Color_Rojo =
+CALCULATE (
+    [Cantidad],
+    dim_Producto[Color] = "Rojo",
+    DISTINCT ( dim_Producto[Color] )
+)
+```
+
+Aquí está lo interesante. `VALUES ( dim_Producto[Color] )` se evalúa **antes** de entrar en CALCULATE, con el contexto de la fila: en la fila Azul devuelve `{"Azul"}`. CALCULATE recibe dos filtros sobre la misma columna, `{"Rojo"}` y `{"Azul"}`, y los intersecta. Resultado: vacío.
+
+Es el mismo efecto que KEEPFILTERS, escrito a mano. DISTINCT se comporta igual que VALUES; solo cambia cómo tratan la fila en blanco que aparece cuando hay claves huérfanas en la tabla de hechos.

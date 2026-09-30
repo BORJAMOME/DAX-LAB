@@ -1,20 +1,21 @@
-# Calendario DAX Lab 🗓️
+## Calendario con Power Query (M)
 
-Este script en **Power Query (M)** crea un calendario completo para usar en Power BI, con información de fechas, días, semanas, trimestres y festivos de España. Ideal para modelado de datos, análisis temporal y KPIs dinámicos.
+Este script en **Power Query (M)** crea un calendario completo para usar en Power BI, con información de fechas, días, semanas, trimestres y festivos de España. Lo uso como tabla de fechas por defecto cuando el modelo carga los datos con Power Query.
 
 
-## 📌 Cómo usarlo
+### Cómo usarlo
 
 1. Copia el código M en **Power Query** (Obtener Datos → Consulta Nula → Editor Avanzado).  
 2. Ajusta los años mínimo y máximo en los parámetros:
    ```m
    AnioMin = 2022
    AnioMax = 2024
+   ```
 3. Carga la tabla y conéctala en tu modelo de datos.
 
 4. Relaciona la columna Fecha con tus tablas de hechos para habilitar Time Intelligence y análisis por periodos.
 
-## 📌 Columnas generadas
+### Columnas generadas
 
 | Columna            | Descripción                                                     |
 | ------------------ | --------------------------------------------------------------- |
@@ -44,12 +45,11 @@ Este script en **Power Query (M)** crea un calendario completo para usar en Powe
 | Festivo            | Festivos principales de España (incluye Jueves y Viernes Santo) |
 
 
-* Este esquema muestra cómo se derivan columnas unas de otras y cuáles dependen de la fecha actual (Hoy).
 
 
-## 📌 Características especiales
+### Qué tiene de especial
 
-- Festivos dinámicos: Calcula Jueves y Viernes Santo automáticamente.
+- Festivos nacionales de España, con Jueves y Viernes Santo calculados a partir de la fecha de Pascua (algoritmo de Butcher). No incluye festivos autonómicos ni locales: para eso hay que añadir una tabla aparte por comunidad.
 
 - Días laborables: Detecta fines de semana y laborables.
 
@@ -58,7 +58,7 @@ Este script en **Power Query (M)** crea un calendario completo para usar en Powe
 - Formato amigable: Meses y días en español, nombres cortos, identificadores numéricos y de texto.
 
 
-## 📌 Tips de uso
+### Consejos de uso
 
 - Columnas de desvío (DesvíoMes, DesvíoDía) son útiles para filtros relativos, rolling periods o dashboards comparativos.
 
@@ -198,3 +198,4 @@ let
 in
     #"Mayúsculas aplicadas en cada palabra"
 
+```

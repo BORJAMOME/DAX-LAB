@@ -1,47 +1,34 @@
-﻿### Encabezados din├ímicos con ISFILTERED 
+## Encabezados dinámicos con ISFILTERED
 
-Es muy com├║n que un usuario filtre el informe (por pa├¡s, categor├¡a, canal, etc.) y luego se pregunte:
-┬┐Esto que estoy viendo exactamente a qu├® se refiere?
+Un director abre el informe, ve "Ventas: 2,3 M€" y pregunta: ¿esto es de todas las regiones o solo de alguna? Si el título no lo dice, la cifra no vale.
 
-Los encabezados din├ímicos sirven para que el propio informe se lo explique, sin que nadie tenga que interpretarlo.
+Los encabezados dinámicos resuelven eso: el título cambia según los filtros activos.
 
-#### Problema
+- Sin filtros, título genérico.
+- Con filtros, el título nombra la selección.
 
-Imagina un dashboard de ventas que usa filtros de:
-
-- Pa├¡s
-- Categor├¡a
-
-Un director abre el informe y ve una cifra grande: Ventas = 2,3M Ôé¼.
-Pregunta inmediata: ┬┐Esto es de todas las regiones o solo de alguna?
-
-Aqu├¡ es donde entran los Encabezados din├ímicos: el t├¡tulo del gr├ífico cambia autom├íticamente seg├║n los filtros aplicados.
-
-#### Idea principal
-
-- Si no hay filtro, el t├¡tulo es gen├®rico.
-- Si hay filtros, el t├¡tulo dice exactamente qu├® est├í seleccionado.
-
-```
-ISFILTERED Pa├¡s = 
-IF(
-    ISFILTERED(dim_Clientes[Pa├¡s]),
-    VAR vFiltros = FILTERS(dim_Clientes[Pa├¡s])
-    VAR vTexto = CONCATENATEX(vFiltros, dim_Clientes[Pa├¡s], ", ")
-    RETURN
-        "Pa├¡s: " & vTexto
+```DAX
+Título País =
+IF (
+    ISFILTERED ( dim_Clientes[País] ),
+    "País: " & CONCATENATEX ( VALUES ( dim_Clientes[País] ), dim_Clientes[País], ", " ),
+    "Todos los países"
 )
 ```
 
-```
-ISFILTERED Categor├¡a = 
-IF(
-    ISFILTERED(dim_Producto[Categor├¡a]),
-    VAR vFiltros = FILTERS(dim_Producto[Categor├¡a])
-    VAR vTexto = CONCATENATEX(vFiltros, dim_Producto[Categor├¡a], ", ")
-    RETURN
-        "Categor├¡a: " & vTexto
+```DAX
+Título Categoría =
+IF (
+    ISFILTERED ( dim_Producto[Categoría] ),
+    "Categoría: " & CONCATENATEX ( VALUES ( dim_Producto[Categoría] ), dim_Producto[Categoría], ", " ),
+    "Todas las categorías"
 )
 ```
+
+La medida se asigna al título del visual desde **Formato → Título → fx**.
 
 ![isfiltered](../../docs/imagenes/isfiltered_.png)
+
+Si el usuario selecciona 40 países, el título se vuelve ilegible. En producción limito la lista: a partir de 3 valores muestro "País: 40 seleccionados" con `COUNTROWS ( VALUES ( ... ) )`.
+
+La explicación de cómo funciona ISFILTERED (y qué no detecta) está en [ISFILTERED](<../../Avanzado/ISFILTERED/>).

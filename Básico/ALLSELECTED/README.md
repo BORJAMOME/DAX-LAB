@@ -1,6 +1,6 @@
 ## ALLSELECTED
 
-ALLSELECTED recalcula respetando lo que el usuario ha seleccionado, pero ignorando el nivel de detalle del visual.
+ALLSELECTED quita los filtros que vienen de las filas y columnas del visual, pero conserva los de slicers y filtros externos. Es la función para calcular "% sobre el total visible".
 
 ```
 ALLSELECTED(
@@ -17,12 +17,13 @@ Puedes usarla sobre:
 
 ### Ejemplo
 
-```
-% Ventas II =
-DIVIDE(
+Para comparar, el % sobre el total del modelo (ignora también los slicers):
+
+```DAX
+% Ventas ALL =
+DIVIDE (
     [Ventas Totales],
-    [Función ALL I],
-    0
+    CALCULATE ( [Ventas Totales], ALL ( FactSales ) )
 )
 ```
 
@@ -44,21 +45,13 @@ DIVIDE (
 
 ***¿Qué está pasando aquí?***
 
-Numerador: Ventas en el contexto actual del visual
+Numerador: ventas en el contexto de la celda (producto, mes o lo que haya en el visual).
 
-- Producto
+Denominador: ventas del conjunto seleccionado. Respeta los slicers (año, región, cliente…) e ignora el desglose por filas y columnas.
 
-- Mes
+Resultado: cada fila se divide entre el total visible, no el total del modelo. Si el usuario filtra una región, los porcentajes vuelven a sumar 100 %.
 
-- Lo que toque
-
-Denominador: Ventas totales del conjunto seleccionado
-
-- Respeta slicers (Año, Región, Cliente…)
-
-- Ignora el desglose por filas/columnas
-
-Resultado: Cada fila se divide entre el total visible, no el total del modelo.
+Un matiz: el tercer argumento de DIVIDE en `% Ventas ALLSELECTED` es 0. Lo quitaría: con 0, una fila sin ventas del total muestra 0 %; con blanco (valor por defecto) la fila desaparece, que suele ser lo esperado.
 
 
 ![ejemplo](/docs/imagenes/ALLSELECTED1.png)

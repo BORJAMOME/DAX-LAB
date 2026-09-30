@@ -18,7 +18,9 @@ CONCATENATEX(
 
 - Si hay varios → tabla con varias filas
 
-- Si no hay selección → tabla con todos los países visibles por filtro
+- Si no hay selección → todos los países
+
+Con 40 países la tarjeta se vuelve ilegible. En producción, a partir de cierto número muestro "40 países seleccionados" en lugar de la lista.
 
 2. CONCATENATEX(..., ", ") → concatena los valores en una cadena separada por comas
 
@@ -53,14 +55,17 @@ MIN(DIM_Clientes[País]) & " - " & MAX(DIM_Clientes[País])
 
 ***Incluir conteo***
 
-```
+```DAX
 Países Seleccionados =
-CONCATENATEX(
-    VALUES(DIM_Clientes[País]),
-    DIM_Clientes[País] & " (" & COUNTROWS(FILTER(DIM_Clientes, DIM_Clientes[País]=EARLIER(DIM_Clientes[País]))) & ")",
-    ", "
+CONCATENATEX (
+    VALUES ( DIM_Clientes[País] ),
+    DIM_Clientes[País] & " (" & CALCULATE ( COUNTROWS ( DIM_Clientes ) ) & ")",
+    ", ",
+    DIM_Clientes[País], ASC
 )
 ```
+
+Número de clientes por país. `CALCULATE` convierte el país de la iteración en filtro (transición de contexto), así que no hace falta el `FILTER` con `EARLIER` de la primera versión, que hacía lo mismo recorriendo la tabla entera por cada país.
 
 ![ejemplo](/docs/imagenes/Tarjeta_III.png)
 

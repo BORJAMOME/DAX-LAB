@@ -1,84 +1,52 @@
-### Lógica condicional jerárquica con tablas virtuales
+## Lógica condicional a nivel de producto en una matriz con jerarquía
 
-Cuando una regla de negocio debe aplicarse producto a producto, pero el informe permite ver categorías o subcategorías, necesitas forzar el cálculo al nivel correcto usando una tabla virtual y luego sumar el resultado.
+Cuando una regla de negocio se decide producto a producto pero el informe muestra categorías y subcategorías, hay que calcular la regla en el nivel de producto y después sumar. Si la aplico directamente, Power BI la evalúa sobre el agregado de la categoría y el resultado cambia.
 
-Si no lo haces así, Power BI aplica la lógica después de agrupar y los números dejan de tener sentido.
+### El caso
 
-#### Ejemplo:
+Matriz Categoría → Subcategoría → Producto, con dos medidas base:
 
-Tienes una matriz con la jerarquía:
-
- - Categoría
-
- - Subcategoría
-
- - Producto
-
-Y una métrica base:
-
-```
-Ventas =
-SUM(Ventas[Importe])
+```DAX
+Cantidad = SUM ( Ventas[Cantidades] )
 ```
 
-Además, el negocio define otra métrica:
-
-```
-Ventas Color = 
-    CALCULATE([Cantidad],
-    dim_Producto[Color] IN { "Rojo", "Negro" }
-)
+```DAX
+Ventas Color =
+CALCULATE ( [Cantidad], dim_Producto[Color] IN { "Rojo", "Negro" } )
 ```
 
-Ahora se pide otra métrica de negocio:
+La regla: para cada producto, contar sus unidades rojas o negras, pero ignorar los productos con cantidades negativas (devoluciones netas) para que no resten al total de la categoría.
 
-Reglas:
+### La medida
 
-- Si un producto no es rojo o negro, no cuenta
-
-- Si las ventas de rojo o negro superan a las ventas totales, usa ventas totales
-
-En caso contrario, usa ventas de rojo y negro. 
-
-
-#### Medida: 
-
-```
-Ventas Netas Ajustadas = 
-
-VAR TablaVirtualProducto =
-    SUMMARIZE(
-        Ventas,
-        dim_Producto[Categoría],
-        dim_Producto[Subcategoría],
-        dim_Producto[Producto],
-        "ResultadoLogica",
-            IF(
-                [Cantidad] < 0, BLANK(),
-                IF(
-                    [Ventas Color] < 0, BLANK(),
-                    IF(
-                        [Ventas Color] > [Cantidad],
-                        [Cantidad],
-                        [Ventas Color]
-                    )
-                )
-            )
+```DAX
+Ventas Netas Ajustadas =
+VAR TablaProducto =
+    ADDCOLUMNS (
+        SUMMARIZE ( Ventas, dim_Producto[Categoría], dim_Producto[Subcategoría], dim_Producto[Producto] ),
+        "@Resultado",
+            VAR vTotal = [Cantidad]
+            VAR vColor = [Ventas Color]
+            RETURN IF ( vTotal > 0 && vColor > 0, MIN ( vColor, vTotal ) )
     )
-
-VAR ResultadoFinal =
-    SUMX(
-        TablaVirtualProducto,
-        [ResultadoLogica]
-    )
-
 RETURN
-ResultadoFinal
+    SUMX ( TablaProducto, [@Resultado] )
 ```
 
-![isfiltered](../../docs/imagenes/logica_jerarquica.png)
+1. SUMMARIZE crea una fila por producto con ventas en el contexto actual.
+2. ADDCOLUMNS evalúa la regla en cada fila. La transición de contexto hace que `[Cantidad]` y `[Ventas Color]` se calculen para ese producto.
+3. SUMX suma los resultados. En la fila de categoría, el valor es la suma de las decisiones por producto, no una decisión sobre el total.
 
+Uso ADDCOLUMNS sobre SUMMARIZE en lugar de meter la columna calculada dentro de SUMMARIZE. Funciona igual en casos simples, pero SUMMARIZE con columnas calculadas puede dar resultados inesperados y SQLBI lo desaconseja expresamente.
 
+![resultado](../../docs/imagenes/logica_jerarquica.png)
 
+### Por qué no basta con un IF
 
+```DAX
+-- Así NO
+Ventas Netas Ajustadas (mal) =
+IF ( [Cantidad] > 0 && [Ventas Color] > 0, MIN ( [Ventas Color], [Cantidad] ) )
+```
 
+En la fila de producto da lo mismo. En la fila de categoría compara los totales de la categoría: si un producto tiene −50 y otro +200, el IF ve +150 y deja pasar el negativo. La versión con tabla virtual lo descarta.

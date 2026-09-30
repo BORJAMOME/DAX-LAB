@@ -1,11 +1,12 @@
-A continuación, algunas medidas de color estándar que uso para mis proyectos en Power BI.  
-Se pueden crear en bloque en la **vista DAX Query** para facilitar el formateo condicional en tus visualizaciones.
+## Librería de colores
 
-> Consejo: siempre mantén un color transparente en tu modelo; puede ser muy útil para overlays o elementos ocultos.
+Las medidas de color que uso en todos mis informes. Las creo de golpe desde la **vista de consultas DAX** (pegando el bloque de abajo y pulsando "Actualizar modelo") y luego las referencio en el formato condicional.
+
+Siempre incluyo un transparente: sirve para ocultar etiquetas, fondos de botones o barras que no quiero que se vean sin tocar el visual.
 
 
 
-## Tabla de Colores
+### Paleta
 
 | Medida | Color HEX |
 |--------|-----------|
@@ -19,13 +20,13 @@ Se pueden crear en bloque en la **vista DAX Query** para facilitar el formateo c
 | `ColorGris2`            | `#bfbfbf` |
 | `ColorGris3`            | `#e5e5e5` |
 
-> Puedes copiar rápidamente el código HEX en cualquier formato condicional o visual de Power BI.
 
 
 
-## Código DAX
+### Código para la vista de consultas DAX
 
 ```DAX
+DEFINE
 MEASURE 'Tabla Medidas'[ColorTransparente] = "#FFFFFF00"
 MEASURE 'Tabla Medidas'[ColorNegativos] = "#a81917"
 MEASURE 'Tabla Medidas'[ColorPositivos] = "#3c8a37"
@@ -35,6 +36,9 @@ MEASURE 'Tabla Medidas'[ColorNeutrosAzul] = "#0078d4"
 MEASURE 'Tabla Medidas'[ColorGris1] = "#d3d3d3"
 MEASURE 'Tabla Medidas'[ColorGris2] = "#bfbfbf"
 MEASURE 'Tabla Medidas'[ColorGris3] = "#e5e5e5"
+
+EVALUATE
+    { [ColorPositivos] }
 
 ```
 

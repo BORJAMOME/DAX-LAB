@@ -129,7 +129,4 @@ Esto permite:
 
 
 
-📂 Se incluye el archivo PBIX para que puedas probarlo, tocarlo y verlo en acción.
-
-
-
+El `.pbix` está en esta misma carpeta.

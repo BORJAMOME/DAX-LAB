@@ -1,145 +1,67 @@
 ## ISINSCOPE
 
-Te permite mirar en qué nivel estás parado.
+ISINSCOPE responde a una pregunta concreta: ¿esta columna es un nivel de agrupación en la celda que estoy calculando?
 
-ISINSCOPE(columna) devuelve:
+Con una jerarquía Año → Mes → Día en una matriz:
 
-- TRUE → esa columna está activa en el nivel actual del visual
+| Celda | `ISINSCOPE(Año)` | `ISINSCOPE(Mes)` | `ISINSCOPE(Día)` |
+|---|---|---|---|
+| Total general | FALSE | FALSE | FALSE |
+| Fila de año | TRUE | FALSE | FALSE |
+| Fila de mes | TRUE | TRUE | FALSE |
+| Fila de día | TRUE | TRUE | TRUE |
 
-- FALSE → no lo está
-
-### Lógica jerárquica 
-
-ISINSCOPE(Calendario[Mes])
-
-Año
- └─ Mes
-     └─ Día
-
-- Visual en Mes → TRUE
-
-- Visual en Año → FALSE
-
-- Visual en Día → FALSE
-
+En una fila de día, el mes también está "en scope": la celda pertenece a un mes y a un año concretos. Por eso, cuando uso ISINSCOPE en un SWITCH, **siempre pregunto primero por el nivel más bajo**. Si empiezo por Año, todas las filas entran en esa rama.
 
 ![ejemplo](/docs/imagenes/ISINSCOPE.png)
 
+### Ejemplo: marcar el producto que más vende
+
+```DAX
+Max Ventas Producto =
+MAXX ( ALLSELECTED ( dim_Producto[Producto] ), [Cantidad] )
 ```
-Ventas Inteligentes = 
-IF(
-    ISINSCOPE(dim_Producto[Producto]),
+
+```DAX
+Ventas Inteligentes =
+IF (
+    ISINSCOPE ( dim_Producto[Producto] ),
     [Cantidad],
     [Max Ventas Producto]
 )
 ```
 
-- En nivel Producto → muestra ventas reales
+En las filas de producto muestra la cantidad; en el total, el máximo (40.755 en la captura) en lugar de la suma.
 
-- En nivel superior (Categoría, Total) → muestra el máximo
-
-
-```
-Producto es Máximo Ventas = 
-IF(
-    ISINSCOPE(dim_Producto[Producto]),
-    [Cantidad] = [Max Ventas Producto],
-    FALSE()
-)
+```DAX
+Producto es Máximo Ventas =
+ISINSCOPE ( dim_Producto[Producto] )
+    && [Cantidad] = [Max Ventas Producto]
 ```
 
-¿Este producto es el que más vende?”
-
-- TRUE solo en la fila ganadora
-
-- FALSE en el resto
-
-
-***Icono visual***
-
-```
-Icono Máximo = 
-IF(
-    [Producto es Máximo Ventas],
-    "⬤",
-    ""
-)
+```DAX
+Icono Máximo =
+IF ( [Producto es Máximo Ventas], "⬤" )
 ```
 
+TRUE solo en la fila ganadora. El icono se puede usar tal cual en una tabla o como base de un formato condicional.
 
+### SWITCH por niveles
 
-----
+El patrón que más reutilizo: una medida que cambia de cálculo según el nivel del drill-down.
 
-### Otros usos interesanes
-
-
-```
-Icono Alerta =
-IF(
-    ISINSCOPE(dim_Producto[Producto]) &&
-    [Margen] < 0,
-    "⚠️",
-    ""
-)
-```
-
-```
-Ventas Drill Inteligente =
-SWITCH(
-    TRUE(),
-    ISINSCOPE(dim_Producto[Producto]), [Cantidad],
-    ISINSCOPE(dim_Producto[Categoría]), [Ventas Categoría],
+```DAX
+Ventas por Nivel =
+SWITCH (
+    TRUE (),
+    ISINSCOPE ( dim_Producto[Producto] ),  [Cantidad],
+    ISINSCOPE ( dim_Producto[Categoría] ), [Ventas Categoría],
     [Ventas Totales]
 )
 ```
 
-```
-Ranking Visible =
-IF(
-    ISINSCOPE(dim_Producto[Producto]),
-    [Ranking Ventas],
-    BLANK()
-)
-```
+Producto va primero porque es el nivel más bajo.
 
-```
-Variación vs Anterior =
-IF(
-    ISINSCOPE(Calendario[Mes]),
-    [Ventas Mes] - [Ventas Mes Anterior],
-    BLANK()
-)
-```
+### ISINSCOPE vs HASONEVALUE
 
-```
-Marca Top N =
-IF(
-    ISINSCOPE(dim_Producto[Producto]),
-    [Es Top N],
-    BLANK()
-)
-```
-
-
-***Mostrar texto explicativo dinámico***
-
-```
-Texto Contexto =
-IF(
-    ISINSCOPE(dim_Producto[Producto]),
-    "Detalle por producto",
-    "Vista agregada"
-)
-```
-
-
-
-
-
-
-
-
-
-
-
-
+HASONEVALUE devuelve TRUE si la columna tiene un único valor visible, venga de donde venga (fila del visual, slicer, filtro de página). ISINSCOPE solo mira las columnas de agrupación del visual. Para lógica de matrices uso ISINSCOPE; para tarjetas que dependen de un slicer, HASONEVALUE.

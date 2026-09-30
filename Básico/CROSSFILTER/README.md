@@ -1,57 +1,26 @@
-## CROSSFILTER 
+## CROSSFILTER
 
+CROSSFILTER cambia la dirección en que se propaga el filtro por una relación, solo durante una medida.
 
-***CROSSFILTER*** permite cambiar la dirección de propagación de filtros entre dos tablas relacionadas.
+Por defecto, en una relación 1:N el filtro va de la tabla "uno" a la "muchos": de `dim_Clientes` a `Ventas`, de `dim_Producto` a `Ventas`. Filtrar un color reduce las ventas, pero **no** reduce la lista de clientes, porque el filtro no sube de `Ventas` a `dim_Clientes`.
 
-Por defecto, los filtros van de la tabla “uno” a la “muchos” (single direction).
+Eso es un problema cuando la pregunta es "¿cuántos clientes han comprado productos rojos?".
 
-Con ***CROSSFILTER***(..., Both), los filtros se propagan en ambos sentidos, generando resultados que antes no veías.
-
-#### Ejemplo:
-
-Imagina un negocio de retail:
-
-- Una tabla Clientes y otra tabla Ventas.
-
-- Cada cliente puede comprar varios productos (relación 1:n).
-
-Si filtramos por color de producto:
-
-- Dirección normal: el filtro va de clientes → ventas.
-
-- Con Both: el filtro fluye de clientes → ventas y de ventas → clientes, permitiendo que un filtro aplicado en colores afecte quién es cliente y viceversa.
-
-- CROSSFILTER(Column1, Column2, Direction) se usa dentro de CALCULATE.
-
-- Direction puede ser:
-
-  - ***Single*** → dirección predeterminada de la relación
-      
-  - ***Both*** → activa la relación bidireccional temporalmente para esa medida
-      
-  - ***None*** → ignora la relación completamente
- 
-  
-
-| Medida                            | Qué hace                                                                                                                                      |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Clientes-Colores`                | Cuenta clientes considerando ventas filtradas por colores, con relación bidireccional (Both).                                                 |
-| `Clientes-Colores (sin magia)`    | Cuenta clientes **sin cruzar filtros** de ventas → el color no afecta.                                                                        |
-| `Reino Unido-Colores`             | Cuenta clientes de Reino Unido y además filtra colores de ventas → Both permite que el color “influya” sobre los clientes filtrados por país. |
-| `Reino Unido-Colores (sin magia)` | Simplemente cuenta clientes de Reino Unido, sin considerar colores → dirección normal de la relación no propaga el filtro de ventas.          |
-
-
-
-
-
-![ejemplo](/docs/imagenes/crossfilter.png)
-
-
-
-
-
-
+```DAX
+CROSSFILTER ( <columna1>, <columna2>, <dirección> )
 ```
+
+Direcciones posibles:
+
+- **OneWay**: la dirección normal de la relación.
+- **Both**: el filtro se propaga en los dos sentidos.
+- **None**: la relación se ignora.
+
+(Hay dos variantes más, `OneWay_LeftFiltersRight` y `OneWay_RightFiltersLeft`, para forzar un sentido concreto.)
+
+### Las medidas
+
+```DAX
 Clientes-Colores =
 CALCULATE (
     [Total_Clientes],
@@ -59,7 +28,9 @@ CALCULATE (
 )
 ```
 
-```
+Con Both, el color filtra Ventas y Ventas filtra Clientes: cuenta solo los clientes que compraron ese color.
+
+```DAX
 Clientes-Reino Unido =
 CALCULATE (
     COUNT ( dim_Clientes[IdCliente] ),
@@ -67,7 +38,7 @@ CALCULATE (
 )
 ```
 
-```
+```DAX
 Reino Unido-Colores =
 CALCULATE (
     [Clientes-Reino Unido],
@@ -75,11 +46,21 @@ CALCULATE (
 )
 ```
 
-```
-Clientes-Colores (sin magia) = [Total_Clientes]
-```
+Clientes de Reino Unido que compraron el color de la fila.
 
-```
-Reino Unido-Colores (sin magia) = [Clientes-Reino Unido]
-```
+| Medida | Qué cuenta |
+|---|---|
+| `Total_Clientes` | Todos los clientes; el color no le afecta |
+| `Clientes-Colores` | Clientes que compraron ese color |
+| `Clientes-Reino Unido` | Clientes de Reino Unido; el color no le afecta |
+| `Reino Unido-Colores` | Clientes de Reino Unido que compraron ese color |
 
+![ejemplo](/docs/imagenes/crossfilter.png)
+
+A la derecha, las mismas medidas sin CROSSFILTER (las etiquetadas "sin magia"): el color no cambia nada y todas las filas repiten 18.484 y 1.913. La columna `Compradores` de la izquierda es `DISTINCTCOUNT ( Ventas[IdCliente] )` y coincide con `Clientes-Colores`, lo que confirma la alternativa del final.
+
+### Por qué en la medida y no en el modelo
+
+Podría marcar la relación como bidireccional en el modelo y ahorrarme CROSSFILTER. No lo hago: una relación bidireccional afecta a todas las medidas y visuales, puede crear ambigüedad si hay más de un camino entre tablas y hace el modelo más lento. Con CROSSFILTER, el comportamiento bidireccional se limita a la medida que lo necesita.
+
+Una alternativa sin CROSSFILTER es contar clientes desde la tabla de hechos: `DISTINCTCOUNT ( Ventas[IdCliente] )` ya responde "clientes que compraron", porque Ventas sí recibe el filtro de color.

@@ -1,67 +1,41 @@
-## Comparación de datos hasta la fecha
+## Comparar con el año anterior hasta la misma fecha
 
-Queremos comparar lo que ha pasado hasta hoy con lo que pasó el mismo periodo del año anterior.
+Pregunta de negocio: a día de hoy, ¿vamos mejor o peor que el año pasado *en el mismo punto del año*?
 
-- [Última Fecha Hechos] → nos dice cuál es el último día con datos.
+Ejemplo: los datos llegan hasta el 13 de marzo de 2024. Comparar el acumulado de 2024 con todo 2023 no tiene sentido; hay que comparar con el acumulado hasta el 13 de marzo de 2023.
 
-- [Última Fecha Año Anterior] → calcula el mismo día pero un año antes.
+### Última fecha con datos
 
-- DATEADD → mueve fechas y permite calcular ventas del año pasado hasta la misma fecha.
-
-En pocas palabras: miramos nuestro dashboard hoy y vemos cómo vamos comparado con el año pasado, hasta la misma fecha.
-
-Imagina el siguiente escenario:
-
-- Hoy es 13 de Marzo de 2023 y quieres saber cuánto has vendido hasta ahora.
-
-- También quieres ver cuánto habías vendido hasta 13 de enero de 2025, para comparar el progreso.
-
-
-#### Última Fecha Hechos
-
+```DAX
+Última Fecha Hechos = MAX ( Ventas[Fecha] )
 ```
-Última Fecha Hechos = MAX(Ventas[Fecha])
+
+La fecha máxima de la tabla de hechos, no del calendario. El calendario suele llegar a final de año y daría una fecha sin ventas.
+
+### Misma fecha un año antes
+
+```DAX
+Última Fecha Año Anterior = EDATE ( [Última Fecha Hechos], -12 )
 ```
-Busca la fecha máxima disponible en la tabla de ventas.
 
+EDATE mueve la fecha 12 meses y conserva el día: 13/03/2024 → 13/03/2023. Si quisiera comparar por meses cerrados, usaría `EOMONTH ( …, -12 )`, que lleva al último día del mes (31/03/2023).
 
-#### Última Fecha Año Anterior
-```
-Última Fecha Año Anterior = EOMONTH([Última Fecha Hechos], -12)
-```
-- EOMONTH mueve la fecha al final del mes un año atrás.
+### Año anterior con DATEADD
 
-- Útil cuando quieres comparativas mensuales “acumuladas hasta el mes”.
-
-
-#### Año Pasado DATEADD
-```
-Año Pasado DATEADD = 
-CALCULATE(
+```DAX
+Año Pasado DATEADD =
+CALCULATE (
     [Cantidad],
-    DATEADD(
-        Calendario_II[Fecha], -1, YEAR
-    )
+    DATEADD ( Calendario_II[Fecha], -1, YEAR )
 )
 ```
 
-- DATEADD desplaza las fechas una unidad temporal (en este caso, -1 año).
-
-- CALCULATE recalcula [Cantidad] bajo el nuevo contexto de fechas.
-
-
-
-##### Diferencias clave con otras funciones de Time Intelligence:
-
-- SAMEPERIODLASTYEAR hace algo parecido pero solo funciona para periodos completos de calendario.
-
-- DATEADD es más flexible: sirve para mover cualquier periodo (días, meses, trimestres, años) y comparar hasta cualquier fecha.
-
+DATEADD desplaza un año las fechas que haya en el contexto. En una fila de marzo de 2024 devuelve marzo de 2023.
 
 ![ejemplo](/docs/imagenes/fecha_I.png)
 
+### DATEADD y SAMEPERIODLASTYEAR
 
+`SAMEPERIODLASTYEAR ( Calendario[Fecha] )` equivale a `DATEADD ( Calendario[Fecha], -1, YEAR )`. Uso SAMEPERIODLASTYEAR cuando solo necesito el año anterior porque se lee mejor, y DATEADD cuando el desplazamiento es otro (meses, trimestres, días).
 
-
-
-
+Ninguna de las dos resuelve por sí sola el problema de esta página: en el total del año devuelven el año anterior *completo*. El corte en la última fecha con datos está en [Comparar solo hasta una fecha](<../Comparar solo hasta una fecha/>).

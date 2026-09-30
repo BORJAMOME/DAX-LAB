@@ -6,14 +6,11 @@ Este ejemplo muestra cómo construir en Power BI con DAX un gráfico dinámico q
 
 - meses por debajo del promedio
 
-El resultado es un gráfico fácil de leer, muy potente para análisis de rendimiento y perfecto para storytelling.
+La pregunta que responde: qué meses han rendido mejor o peor que la media del año.
 
 ![ejemplo](/docs/imagenes/analisis_1.png)
 
 
-### Objetivo del análisis
-
-¿Qué meses han rendido mejor o peor que la media del año?
 
 
 ### Medidas
@@ -42,6 +39,8 @@ CALCULATE(
 )
 ```
 
+El gráfico es de columnas apiladas con dos series: la de abajo llega hasta la media (o hasta la venta, si el mes queda por debajo) y la de arriba solo existe en los meses que la superan. Con colores distintos, el exceso sobre la media se ve sin leer números.
+
 **Barra superior**
 
 ```
@@ -67,4 +66,4 @@ MIN(
 
 
 
-📂 Se incluye el archivo PBIX para que puedas probarlo, tocarlo y verlo en acción.
+El `.pbix` está en esta misma carpeta.

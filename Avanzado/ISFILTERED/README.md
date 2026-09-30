@@ -1,82 +1,41 @@
 ## ISFILTERED
 
-ISFILTERED es el “detector de intención del usuario”. No calcula números: lee decisiones.
+ISFILTERED devuelve TRUE cuando una columna tiene un filtro **directo**: un slicer, un filtro de visual, de página o de informe sobre esa misma columna.
 
-ISFILTERED comprueba si una columna tiene algún filtro aplicado, venga de:
-
-- slicer
-
-- filtro visual
-
-- filtro de página
-
-- filtro cruzado
-
+Lo que no detecta es el filtro que llega por una relación. Si el usuario filtra `dim_Producto[Categoría]`, la columna `dim_Producto[Producto]` queda reducida, pero `ISFILTERED ( dim_Producto[Producto] )` sigue devolviendo FALSE. Para eso está `ISCROSSFILTERED`.
 
 ![ejemplo](/docs/imagenes/ISFILTERED.png)
 
+### Texto con la selección activa
 
+Lo uso sobre todo para títulos y subtítulos que dicen qué se está viendo:
 
-
-
-```
-ISFILTERED Categoría = 
-IF(
-    ISFILTERED(dim_Producto[Categoría]),
-    VAR vFiltros = FILTERS(dim_Producto[Categoría])
-    VAR vTexto = CONCATENATEX(vFiltros, dim_Producto[Categoría], ", ")
-    RETURN
-        "Categoría: " & vTexto
-)
-```
-
-```
-ISFILTERED País = 
-IF(
-    ISFILTERED(dim_Clientes[País]),
-    VAR vFiltros = FILTERS(dim_Clientes[País])
-    VAR vTexto = CONCATENATEX(vFiltros, dim_Clientes[País], ", ")
-    RETURN
-        "País: " & vTexto
-)
-```
-
-1. ISFILTERED detecta si el usuario ha tocado algo
-
-2. FILTERS recupera los valores activos
-
-3. CONCATENATEX los convierte en texto legible
-
-4. Devuelves contexto narrativo, no números
-
-
-```
+```DAX
 Contexto Selección =
-VAR Cat =
-    IF(
-        ISFILTERED(dim_Producto[Categoría]),
-        "Categoría: " &
-        CONCATENATEX(
-            FILTERS(dim_Producto[Categoría]),
-            dim_Producto[Categoría],
-            ", "
-        )
+VAR vCategoria =
+    IF (
+        ISFILTERED ( dim_Producto[Categoría] ),
+        "Categoría: "
+            & CONCATENATEX ( VALUES ( dim_Producto[Categoría] ), dim_Producto[Categoría], ", " )
     )
-
-VAR Pais =
-    IF(
-        ISFILTERED(dim_Clientes[País]),
-        " | País: " &
-        CONCATENATEX(
-            FILTERS(dim_Clientes[País]),
-            dim_Clientes[País],
-            ", "
-        )
+VAR vPais =
+    IF (
+        ISFILTERED ( dim_Clientes[País] ),
+        "País: "
+            & CONCATENATEX ( VALUES ( dim_Clientes[País] ), dim_Clientes[País], ", " )
     )
 RETURN
-    Cat & Pais
+    SWITCH (
+        TRUE (),
+        NOT ISBLANK ( vCategoria ) && NOT ISBLANK ( vPais ), vCategoria & " | " & vPais,
+        COALESCE ( vCategoria, vPais, "Todas las categorías y países" )
+    )
 ```
 
+1. ISFILTERED decide si hay algo que contar.
+2. VALUES recoge los valores visibles y CONCATENATEX los junta en texto.
+3. El SWITCH final evita el separador colgando cuando solo hay uno de los dos filtros.
 
+Sobre `FILTERS` frente a `VALUES`: FILTERS devuelve los valores del filtro directo, VALUES los valores visibles tras todos los filtros. Para un título, VALUES suele ser lo que el usuario espera ver.
 
-
+La aplicación completa en un informe está en [Encabezados dinámicos con ISFILTERED](<../../Básico/ISFILTERED - Encabezados dinámicos/>).
