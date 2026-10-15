@@ -5,7 +5,7 @@ TREATAS toma una tabla de valores y la aplica como filtro sobre columnas del mod
 Lo uso en tres situaciones: filtrar por una lista fija de valores, conectar una tabla desconectada (un selector) con el modelo, y cruzar tablas que no tienen relación física, como un presupuesto con otra granularidad (ver [Ventas vs Presupuesto](<../../Proyectos/Ventas vs Presupuesto/>)).
 
 
-#### Medida 1 — Años 2024–2025
+#### Medida 1: Años 2024–2025
 ```
 Años 2024-2025 TREATAS = 
 CALCULATE(
@@ -22,7 +22,7 @@ CALCULATE(
 
 - TREATAS aplica esos valores como filtro sobre la columna del calendario
 
-#### Medida 2 — Fin 2024 / Inicio 2025
+#### Medida 2: Fin 2024 / Inicio 2025
 
 ```
 Fin 2024 - Inicio 2025 TREATAS = 
