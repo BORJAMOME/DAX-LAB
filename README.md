@@ -2,7 +2,7 @@
 
 Mi cuaderno de DAX y modelado en Power BI. Cada página es un problema concreto que me he encontrado, la medida con la que lo resolví y por qué funciona, con la captura del resultado y, en los proyectos, el `.pbix` para abrirlo.
 
-Más de 50 páginas en cuatro bloques: fundamentos de contexto de filtro, funciones avanzadas (WINDOW, OFFSET, TREATAS…), patrones que reutilizo entre informes y casos completos. Los datos son de Contoso y Adventure Works, los modelos de ejemplo de Microsoft.
+Más de 50 páginas en cuatro bloques: fundamentos de contexto de filtro, funciones avanzadas (WINDOW, OFFSET, TREATAS…), patrones que reutilizo entre informes y casos completos. Los datos son de Contoso y Adventure Works, los modelos de ejemplo de Microsoft..
 
 ## Empieza aquí
 
